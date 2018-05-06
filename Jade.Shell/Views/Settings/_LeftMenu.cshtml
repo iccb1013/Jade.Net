@@ -1,0 +1,22 @@
+﻿
+
+<ul>
+    <li class="">
+        <a class="">
+            <i class="fa fa-key"></i>
+            系统
+            <i class="fa fa-angle-right arrow"></i>
+        </a>
+        <ul class="">
+@if (AuthorizationHelper.Verify("User", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_User" href="@Url.Action("User", "Settings")">用户</a></li>
+}
+@if (AuthorizationHelper.Verify("Role", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_Role" href="@Url.Action("Role", "Settings")">角色</a></li>
+}
+        </ul>
+    </li>
+
+</ul>

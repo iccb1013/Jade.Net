@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.MainMenu = "Settings";
+    ViewBag.SubLeftMenu = "Role";
+
+    ViewBag.EditView = "/Settings/MultipleUserSelector";
+    ViewBag.EditViewAreaWidth = "740px";
+    ViewBag.EditViewAreaHeight = "90%";
+
+    ViewBag.LoadDataApiUrl = "/Api/Role/GetRoleUserList";
+
+    ViewBag.Title = "分配用户：" + Request.QueryString["roleName"];
+    Layout = "~/Views/Shared/_LayoutNormalListView2.cshtml";
+}
+
+@section script{
+
+    <script language="javascript">
+
+        var _roleId = getQueryString("roleId");
+        var _roleName = getQueryString("roleName");
+
+        function initTable() {
+            var args = getTableRenderArgs();
+
+            layui.use('table', function () {
+                var table = layui.table;
+
+                //展示已知数据
+                __table = table.render(args);
+
+                //监听工具条
+                table.on('tool(table)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值
+
+                    if (layEvent === 'removeUserFormRole') {
+                        removeUserFormRole(data.id);
+                    }
+                });
+            });
+        }
+
+        function getTableRenderArgs() {
+            return {
+                elem: '#table'
+                   , width: 790
+                   , height: 450
+                  , cols: [[ //标题栏
+                      { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                      { title: "登录名", field: "account", width: 120, sort: false, fixed: 'left' },
+                { title: "姓名", field: "name", width: 100, sort: false, },
+                                                                 { title: "电话", field: "cellphone", width: 110, sort: false, },
+                                 { title: "角色", field: "roleNames", width: 350, sort: false, },
+                 { toolbar: '#barDemo', title: '', width: 80, fixed: 'right' }
+                  ]]
+              , skin: 'row' //表格风格
+              , even: true
+                //   , page: true //是否显示分页
+                // , limits: [5, 7, 10]
+                //  , limit: 5 //每页默认显示的数量
+            }
+        }
+
+        function getLoadDataArgs(targetPage) {
+
+            var args = new Object();
+            args.PagingInfo = new Object();
+            args.PagingInfo.CurrentPage = targetPage || 1;
+            args.OrderBy = "Name";
+            args.Parameters = new Object();
+            args.Parameters.roleId = _roleId;
+
+            return args;
+        }
+
+        function selectMultipleUserCallback(selectMultipleUserCallback, layerIndex) {
+            layer.close(layerIndex);
+
+            if (selectMultipleUserCallback == undefined || selectMultipleUserCallback == null || selectMultipleUserCallback.length == 0)
+                return;
+
+            var args = new Object();
+            args.RoleId = _roleId;
+            args.UserIdArray = new Array();
+
+            $.each(selectMultipleUserCallback, function (index, value) {
+                args.UserIdArray[args.UserIdArray.length] = value.Id;
+            });
+
+            //__requestApi("/Api/Role/AddUserListToRole", args, function (data) {
+            //    loadData();
+            //});
+
+            __requestApi({
+                apiUrl: "/Api/Role/AddUserListToRole",
+                data:args,
+                callback: function (data) {
+                    loadData();
+                }
+            });
+        }
+
+        function removeUserFormRole(userId) {
+            //__requestApi("/Api/Role/RemoveUserFormRole?roleId=" + _roleId + "&userId=" + userId, null, function (data) {
+            //    loadData();
+            //});
+
+            __requestApi({
+                apiUrl: "/Api/Role/RemoveUserFormRole?roleId=" + _roleId + "&userId=" + userId,
+                callback: function (data) {
+                    loadData();
+                }
+            });
+
+        }
+
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <input type="button" class="btn_aqua_small" value="移除" lay-event="removeUserFormRole" />
+    </script>
+}
+
+
+

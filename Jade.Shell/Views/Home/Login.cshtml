@@ -1,0 +1,399 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <title>张寿宴玉雕工作室</title>
+
+    @*@Scripts.Render("~/Scripts/UserAgent.js")*@
+    @*<script type="text/javascript">
+            var _userAgent = new userAgentObj(navigator.userAgent);
+            if (_userAgent.device != __device_PC) {
+                window.location.href = "/M/Home/Login";
+            }
+        </script>*@
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/common")
+
+    @Scripts.Render("~/Scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/Scripts/validate/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/layer/layer.js")
+
+    @Scripts.Render("~/bundles/md5")
+
+    <style type="text/css">
+        body {
+            font-size: 15px;
+            background-image: url(/Content/Images/login_bg2.jpg);
+            background-size: 100%;
+            /*background-position: right top;*/
+            /*background-repeat: no-repeat;*/
+        }
+
+        input.watermark {
+            color: #999;
+        }
+
+        .input_login {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -o-box-sizing: border-box;
+            font-size: 15px;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #D7D7D7;
+        }
+
+
+        .btn_login {
+            font-size: 16px;
+            color: #FFF;
+            background-color: #36B5F8;
+            /*padding-right: 20px;
+                padding-left: 20px;*/
+            border-top-style: none;
+            border-right-style: none;
+            border-bottom-style: none;
+            border-left-style: none;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+            .btn_login:hover,
+            .btn_login:focus {
+                text-decoration: none;
+                background-color: #09A4F7;
+            }
+
+            .btn_login:active,
+            .btn_login.active {
+                background-image: none;
+                outline: 0;
+                -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            }
+
+            .btn_login:disabled {
+                text-decoration: none;
+                background-color: #CCCCCC;
+            }
+
+        .btn_register {
+            color: #F16777;
+            font-size: 16px;
+            background-color: white;
+            border: 1px solid #F16777;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+            .btn_register:hover,
+            .btn_register:focus {
+                color: white;
+                text-decoration: none;
+                background-color: #F16777;
+            }
+
+            .btn_register:active,
+            .btn_register.active {
+                background-image: none;
+                outline: 0;
+                -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            }
+
+            .btn_register:disabled {
+                text-decoration: none;
+                background-color: #CCCCCC;
+            }
+
+
+
+
+        #divLoginAreaBackground {
+            background-color: #FFF;
+            height: 285px;
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            /*filter: alpha(opacity=20);
+                -moz-opacity: 0.2;
+                -khtml-opacity: 0.2;
+                opacity: 0.2;*/
+            z-index: 12;
+        }
+
+        #divLoginArea {
+            /*color: white;*/
+            width: 400px;
+            z-index: 13;
+        }
+
+
+        #divLoginContent {
+            height: 450px;
+            width: 460px;
+            margin-top: 150px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #FFF;
+            padding: 30px;
+            box-sizing: border-box;
+            box-shadow: 0px 0px 38px #fff;
+        }
+
+
+        #divLoginAreaMaskContent {
+            z-index: 15;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        var _password;
+        var _returnUrl;
+
+        $(document).ready(function () {
+
+            watermark();
+
+            _returnUrl = getQueryString("returnUrl");
+            if (_returnUrl != null && _returnUrl != "") {
+                _returnUrl = decodeURIComponent(_returnUrl);
+            }
+
+            /////
+            var account = getCookie("account");
+            _password = getCookie("password");
+
+            if (account != undefined && account != "") {
+                $("#txtAccount").val(account);
+                $("#chkRememberAccount").attr("checked", "checked");
+            }
+            if (_password != undefined && _password != "") {
+                $('#txtPassword').attr("type", "password");
+                $("#txtPassword").val(_password);
+                $("#chkRememberPassword").attr("checked", "checked");
+            }
+
+            if (account != undefined && account != "" && _password != undefined && _password != "") {
+                login();
+            }
+
+            $("[keyenter]").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    login();
+                }
+            });
+        });
+
+        function watermark() {
+            var accountWatermark = '账户';
+
+            $('#txtAccount').val(accountWatermark).addClass('watermark');
+            $('#txtAccount').blur(function () {
+                if ($(this).val().length == 0) {
+                    $(this).val(accountWatermark).addClass('watermark');
+                }
+            });
+            $('#txtAccount').focus(function () {
+                if ($(this).val() == accountWatermark) {
+                    $(this).val('').removeClass('watermark');
+                }
+            });
+
+            var passwordWatermark = '密码';
+
+            $('#txtPassword').val(passwordWatermark).addClass('watermark');
+            $('#txtPassword').blur(function () {
+                if ($(this).val().length == 0) {
+                    $(this).val(passwordWatermark).addClass('watermark').attr("type", "text");
+                }
+            });
+            $('#txtPassword').focus(function () {
+                if ($(this).val() == passwordWatermark) {
+                    $(this).val('').removeClass('watermark').attr("type", "password");
+                }
+            });
+
+        }
+
+        function onLogin() {
+            _password = null;
+            login();
+        }
+
+        function login() {
+
+            if ($("#form").validate({
+                rules: {
+                          "txtAccount": "required",
+                          "txtPassword": "required"
+            },
+                messages: {
+                          "txtAccount": "!",
+                          "txtPassword": "!"
+            }
+            }).form() == false)
+                return;
+
+            var args = new Object();
+            args.Account = $("#txtAccount").val();
+
+            if (_password != undefined && _password != "") {
+                args.Password = _password;
+            } else {
+                args.Password = hex_md5($("#txtPassword").val()).toLowerCase();
+            }
+
+            args.ReturnUrl = _returnUrl;
+
+            showMask();
+
+            $.ajax({
+                url: "/Api/UserContext/Login",
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify(args),
+                success: function (data, status, jqXHR) {
+                    //alert(JSON.stringify(data));
+
+                    if (data.Successful) {
+                        //
+                        if ($("#chkRememberPassword").is(":checked")) {
+                            setCookie("account", args.Account,30);
+                            setCookie("password", args.Password, 30);
+                        }
+                        else {
+
+                            removeCookie("password");
+
+                            if ($("#chkRememberAccount").is(":checked")) {
+                                setCookie("account", args.Account, 30);
+                            }
+                            else {
+                                removeCookie("account");
+                            }
+                        }
+
+                        //判断跳转地址
+                        //encodeURIComponent("http://www.163.com")
+                        //"http%3A%2F%2Fwww.baidu.com"
+                        //http://localhost:3276/Home/Login?returnUrl=http%3A%2F%2Fwww.baidu.com
+
+                        if (_returnUrl == null || _returnUrl == "") {
+                            window.location.href = "/Member/Member";
+                        } else {
+
+                            if (_returnUrl.indexOf("?") >= 0)
+                            {
+                                _returnUrl += "&";
+                            }
+                            else {
+                                _returnUrl += "?";
+                            }
+
+                            _returnUrl += "token=" + data.Data.Token;
+
+                            window.location.href = _returnUrl;
+                        }
+
+
+                    } else {
+                        hideMask();
+
+                        layerAlert(data.Message, function () { $("#txtPassword").focus(); });
+                    }
+                },
+                error: function (xmlHttpRequest) {
+                    hideMask();
+                    alert("Error: " + xmlHttpRequest.status);
+                }
+            });
+        }
+
+        function showMask() {
+            $("#btn_login").attr("disabled","disabled");
+
+            layer.load(0, {
+                shade: [0.2, '#fff']
+            });
+        }
+
+        function hideMask() {
+            $("#btn_login").removeAttr("disabled");
+
+            layer.closeAll();
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div id="divLoginContent">
+
+        <div id="divLogin" style="text-align:center;">
+            <table style="width:100%" border="0" cellspacing="0">
+                <tr>
+                    <td align="center"><img src="/Content/Images/logo2.png" alt="" style="height:100px;" /></td>
+                </tr>
+            </table>
+        </div>
+        <div id="divLoginArea">
+            <form id="form">
+                <table width="100%" height="285" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td valign="top">
+                            <div style="margin-left:30px;margin-top:30px; margin-right:30px;">
+                                <div style="color:#36B5F8;font-size:17px;">张寿宴玉雕工作室</div>
+                                <div style="margin-top:20px;">
+                                    <input name="txtAccount" type="text" class="input_login" id="txtAccount" keyenter=keyenter />
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <input name="txtPassword" type="text" class="input_login" id="txtPassword" keyenter=keyenter />
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <div style="float:left">
+                                        <input name="" id="chkRememberAccount" type="checkbox" value="" />
+                                        <label for="chkRememberAccount">记住帐户</label>
+                                    </div>
+                                    <div style="float:left; margin-left:30px;">
+                                        <input name="" id="chkRememberPassword" type="checkbox" value="" />
+                                        <label for="chkRememberPassword">自动登录</label>
+                                    </div>
+                                    @*<div style="float:left; margin-left:30px;">
+                                            <a href="/Home/ResetPassword" style="color:black">找回密码</a>
+                                        </div>*@
+                                    <div style="clear:both"></div>
+                                </div>
+                                <div style="margin-top:20px;">
+                                    <input name="btnLogin" type="button" class="btn_login" id="btnLogin" value="登 录" onclick="onLogin()" />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+</body>
+</html>

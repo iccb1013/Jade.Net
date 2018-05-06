@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.MainMenu = "Product";
+    ViewBag.SubLeftMenu = "Order";
+
+   // ViewBag.EditView = "/Product/OrderEdit";
+    ViewBag.EditViewAreaWidth = "900px";
+    ViewBag.EditViewAreaHeight = "90%";
+
+    ViewBag.LoadDataApiUrl = "/Api/Order/GetOrderList";
+
+    ViewBag.Title = "订单";
+    Layout = "~/Views/Shared/_LayoutNormalListView2.cshtml";
+}
+
+
+@section script{
+
+    <script language="javascript">
+
+        function initTable() {
+            var args = getTableRenderArgs();
+
+            layui.use('table', function () {
+                var table = layui.table;
+
+                //展示已知数据
+                __table = table.render(args);
+            });
+        }
+
+        function getTableRenderArgs() {
+            return {
+                elem: '#table'
+                   , width: 790
+                   , height: 450
+                  , cols: [[ //标题栏
+                      { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                       {
+                           field: 'Number', title: '订单号', width: 250, fixed: 'left', sort: false,
+                           templet: "<div><a href='javascript:void(0)' onclick=\"modify('{{d.id}}')\">{{d.id}}</a></div>"
+                       },
+                                       { title: "当前状态", field: "current_status_text", width: 100, sort: false, },
+                { title: "下单时间", field: "order_date_time", width: 160, sort: false, },
+                { title: "收货人", field: "consignee", width: 100, sort: false, },
+               { title: "联系电话", field: "consignee_phone", width: 150, sort: false, },
+               { title: "订单金额", field: "order_price", width: 100, sort: false, },
+               { title: "已收成本和", field: "receiving_real_price", width: 100, sort: false, },
+                { title: "物流单号", field: "transport_no", width: 160, sort: false, },
+                  ]]
+              , skin: 'row' //表格风格
+              , even: true
+                //   , page: true //是否显示分页
+                // , limits: [5, 7, 10]
+                //  , limit: 5 //每页默认显示的数量
+            }
+        }
+
+        function getLoadDataArgs(targetPage) {
+
+            var args = new Object();
+            args.PagingInfo = new Object();
+            args.PagingInfo.CurrentPage = targetPage || 1;
+            args.OrderBy = "order_date_time desc";
+            args.Parameters = new Object();
+
+            __getDto("divSearchArea", args.Parameters);
+
+            return args;
+        }
+
+        function getModifyViewUrl(id) {
+            return "/Product/OrderEdit?id=" + id;
+        }
+
+    </script>
+}
+
+
+@section  searchArea{
+    <div id="divSearchArea" class="divBorder_aque" style="margin:15px 15px 0px 15px;padding:10px 10px 0px 10px;">
+        <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div>
+                        <div style="float:left;margin-right:25px;margin-bottom:10px;">
+                            关键字：
+                            <input id="txtKeyword" name="txtKeyword" type="text" class="input_16" style="width:150px;" keyenter dtoproperty="Keyword" />
+                        </div>
+                        <div style="float:left;margin-right:25px;margin-bottom:10px;">
+                            状态：
+                            <select style="width:150px;" class="input_16" keyenter dtoproperty="current_status">
+                                <option value="">全部</option>
+                                <option value="1">待付费</option>
+                                <option value="2">待发货</option>
+                                <option value="3">已发货</option>
+                                <option value="4">已收货</option>
+                                <option value="5">申请退货</option>
+                                <option value="6">退货中</option>
+                                <option value="9">已完成</option>
+                            </select>
+                        </div>
+                        <div style="clear:both"></div>
+                    </div>
+                </td>
+                <td width="100" align="right" valign="top">
+                    <input type="button" value="查询" class="btn_white" onclick="loadData()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+
+
+
+
+

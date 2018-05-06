@@ -1,0 +1,8 @@
+﻿AppDto 下面的对象使用 Jade.Model.Dto.AppDto 这个命名空间，以与后台 Dto 区分
+
+数据实体DTO命名
+MemberAppDto
+
+请求入参命名：
+MemberLoginArgs
+

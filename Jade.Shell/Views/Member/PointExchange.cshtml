@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.MainMenu = "Member";
+    ViewBag.SubLeftMenu = "PointExchange";
+
+    ViewBag.EditView = "/Member/PointExchangeEdit";
+    ViewBag.EditViewAreaWidth = "700px";
+    ViewBag.EditViewAreaHeight = "450px";
+
+    ViewBag.LoadDataApiUrl = "/Api/Point/GetPointExchangeList";
+
+    ViewBag.Title = "积分提取";
+    Layout = "~/Views/Shared/_LayoutNormalListView2.cshtml";
+}
+
+
+@section script{
+
+    <script language="javascript">
+
+        function initTable() {
+            var args = getTableRenderArgs();
+
+            layui.use('table', function () {
+                var table = layui.table;
+
+                //展示已知数据
+                __table = table.render(args);
+
+
+            });
+        }
+
+        function getTableRenderArgs() {
+            return {
+                elem: '#table'
+                   , width: 790
+                   , height: 450
+                  , cols: [[ //标题栏
+                      { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                       {
+                           field: 'Number', title: '会员', width: 120, fixed: 'left', sort: false,
+                           templet: "<div><a href='javascript:void(0)' onclick=\"modify('{{d.id}}')\">{{d.member_name}}</a></div>"
+                       },
+                { title: "会员手机", field: "member_phone_num", width: 130, sort: false, },
+               { title: "提取积分", field: "amount", width: 150, sort: false, },
+               { title: "状态", field: "status_text", width: 100, sort: false, },
+               { title: "提取时间", field: "exchange_time", width: 160, sort: false, },
+                  ]]
+              , skin: 'row' //表格风格
+              , even: true
+                //   , page: true //是否显示分页
+                // , limits: [5, 7, 10]
+                //  , limit: 5 //每页默认显示的数量
+            }
+        }
+
+        function getLoadDataArgs(targetPage) {
+
+            var args = new Object();
+            args.PagingInfo = new Object();
+            args.PagingInfo.CurrentPage = targetPage || 1;
+            args.OrderBy = "exchange_time desc";
+            args.Parameters = new Object();
+
+            __getDto("divSearchArea", args.Parameters);
+
+            return args;
+        }
+
+    </script>
+}
+
+
+@section  searchArea{
+    <div id="divSearchArea" class="divBorder_aque" style="margin:15px 15px 0px 15px;padding:10px 10px 0px 10px;">
+        <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div>
+                        <div style="float:left;margin-right:25px;margin-bottom:10px;">
+                            关键字：
+                            <input id="txtKeyword" name="txtKeyword" type="text" class="input_16" style="width:150px;" keyenter dtoproperty="Keyword" />
+                        </div>
+
+                        <div style="clear:both"></div>
+                    </div>
+                </td>
+                <td width="100" align="right" valign="top">
+                    <input type="button" value="查询" class="btn_white" onclick="loadData()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+
+
+

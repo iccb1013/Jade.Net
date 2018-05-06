@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "PushMessageHistoryEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+
+
+
+<script>
+    var _id = getQueryString("id");
+
+    var _mode = "create";//modify
+    var _validator;
+    var _data = null;
+
+
+
+    $(document).ready(function () {
+
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        _validator = $("#form").validate({
+            onfocusout: false,
+            onkeyup: false,
+            showErrors: showValidationErrors,
+            rules: {
+                "txtName": "required"
+            },
+            messages: {
+                "txtName": "请输入名称；"
+            }
+        });
+
+        load();
+
+
+    });
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        _mode = "modify";
+        $("#btnRemove").show();
+
+        var url = "/Api/PushMessage/GetPushHistory/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+
+           // console.log(JSON.stringify(_data));
+
+            __setDto("form", _data);
+
+        });
+    }
+
+
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">消息</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">消息类型：</td>
+                <td>
+                    <select style="width:96%;" class="input_16" keyenter dtoproperty="type">
+                        <option value="0" selected>打开APP</option>
+                        <option value="1">打开图文</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">标题：</td>
+                <td><input id="txt_title" name="txt_title" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="title" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">消息：</td>
+                <td>
+                    <textarea rows="5" id="txt_description" name="txt_description" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="description"></textarea>
+                </td>
+            </tr>
+           
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+
+    <div style="float:left;">
+    </div>
+    <div style="float:right">
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+
+
+

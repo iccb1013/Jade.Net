@@ -1,0 +1,303 @@
+﻿
+@{
+    ViewBag.Title = "MemberEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+<script>
+    var _id = getQueryString("id");
+
+    var _mode = "create";//modify
+    var _validator;
+    var _data = null;
+
+    $(document).ready(function () {
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        _validator = $("#form").validate({
+            onfocusout: false,
+            onkeyup: false,
+            showErrors: showValidationErrors,
+            rules: {
+                "txt_name": "required",
+                "txt_phone_num": {
+                    required: true,
+                    number: true,
+                    cellphone: true
+                },
+                "txt_wechat_no": "required",
+            },
+            messages: {
+                "txt_name": "请输入姓名；",
+                "txt_phone_num": {
+                    required: "请输入手机号；",
+                    number: "请输入正确的手机号；"
+                },
+                "txt_wechat_no": "请输入微信号；",
+            }
+        });
+
+        load();
+    });
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        _mode = "modify";
+        $("#btnRemove").show();
+        $("#btnResetPassword").show();
+
+        var url = "/Api/Member/GetMember/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+            __setDto("form", _data);
+
+            if (_data.superior_agent_phone_num != null && _data.superior_agent_phone_num != "") {
+                $("#divMemberContainer").html(_data.superior_agent_name + "(" + _data.superior_agent_phone_num + ")");
+            }
+
+            if (_data.status == 1) {
+                $("#btnChangeStatus2").show();
+                $("#btnChangeStatus3").show();
+            }
+        });
+    }
+
+    function save() {
+
+        if (_validator.form() == false) {
+            return;
+        }
+
+        var url = "/Api/Member/CreateMember";
+        if (_mode == "modify") {
+            url = "/Api/Member/UpdateMember";
+        }
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        __getDto("form", _data);
+
+        //_data.reg_time = null;
+        //_data.update_time = null;
+
+        __requestSaveDataApi(url, _data, _mode);
+    }
+
+    function removeData() {
+        __requestRemoveDataApi("/Api/Member/RemoveMember/" + _id);
+    }
+
+    function resetPassword() {
+        __requestApi({
+            msg: "是否将会员的密码重置为手机号？",
+            apiUrl: "/Api/Member/ResetPassword/" + _id,
+            callback: function (data) {
+                layerAlert("重置成功。");
+
+            }
+        });
+    }
+
+    function changeStatus(status) {
+
+        var args = new Object();
+        args.MemberId = _id;
+        args.Status = status;
+
+        __requestApi({
+            msg: "是否确认更新会员状态？",
+            data: args,
+            apiUrl: "/Api/Member/ChangeStatus",
+            callback: function (data) {
+                //console.log(JSON.stringify(data));
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.__loadDataOnPageAndCloseLayer(index);
+
+            }
+        });
+    }
+
+    //选择会员
+    function selectMember(target) {
+        ///_chooseUserForRoleLayerIndex =
+        layer.open({
+            type: 2,
+            area: ['600px', '80%'], //宽高
+            closeBtn: false,
+            title: "",
+            shift: _layerShift,
+            content: '/Member/MemberSelector?target=' + target
+        });
+    }
+
+    function selectMemberCallback(layerIndex, target, id, name, phone_num) {
+
+        layer.close(layerIndex);
+
+
+        $("#txt_superior_agent_id").val(id);
+        $("#divMemberContainer").html(name + "(" + phone_num + ")");
+
+
+    }
+
+    function clearSelectedMember(target) {
+        $("#txt_superior_agent_id").val("");
+        $("#divMemberContainer").html("");
+    }
+
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">会员</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">姓名：</td>
+                <td><input id="txt_name" name="txt_name" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="name" maxlength="50"/></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">手机：</td>
+                <td><input id="txt_phone_num" name="txt_phone_num" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="phone_num" maxlength="20" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">微信：</td>
+                <td><input id="txt_wechat_no" name="txt_wechat_no" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="wechat_no" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员类型：</td>
+                <td>
+                    <select  style="width:96%;" class="input_16" keyenter dtoproperty="type">
+                        <option value="1" selected>一级代理</option>
+                        <option value="2">二级代理</option>
+                        <option value="3">会员</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">累计消费：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="total_amount" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">上级代理：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:96%;  box-sizing:border-box;float:left ">
+                        <div style="padding:3px 5px 3px 5px">
+                            <div id="divMemberContainer" style="float:left">
+                            </div>
+                            <div style="float:right">
+                                <a href="javascript:void(0)" onclick="selectMember()">选择</a>
+                                <a href="javascript:void(0)" onclick="clearSelectedMember()">清除</a>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <input id="txt_superior_agent_id" name="txt_superior_agent_id" type="hidden" dtoproperty="superior_agent_id" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">持卡人姓名：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="card_holder" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">银行卡号：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="card_no" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">一级开户行：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="deposit_bank" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">二级开户行：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="deposit_branch_bank" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">积分：</td>
+                <td>
+                    <input type="text" class="input_16" style="width:96%; " keyenter dtoproperty="total_point" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员隐私状态：</td>
+                <td>
+                    <select style="width:96%;" class="input_16" keyenter dtoproperty="secret_status">
+                        <option value="0" selected>关闭</option>
+                        <option value="1">开启</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员头像：</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员状态：</td>
+                <td>
+                    <select style="width:96%;" class="input_readonly" keyenter dtoproperty="status" disabled>
+                        <option value="1" selected>新建待审核</option>
+                        <option value="2">审核通过</option>
+                        <option value="3">审核不通过</option>
+                        <option value="5">注销</option>
+                    </select>
+                </td>
+            </tr>
+            @*<tr>
+                <td width="110" height="36">注册时间：</td>
+                <td>
+                    <input type="text" class="input_readonly" style="width:96%; " keyenter dtoproperty="reg_time" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">更新时间：</td>
+                <td>
+                    <input type="text" class="input_readonly" style="width:96%; " keyenter dtoproperty="update_time" readonly/>
+                </td>
+            </tr>*@
+
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        <input name="btnRemove" type="button" class="btn_red" id="btnRemove" value="删 除" style="display:none" onclick="removeData()" />
+    </div>
+    <div style="float:right">
+        <input id="btnChangeStatus2"  type="button" class="btn_green"  value="审核通过" onclick="changeStatus(2)" style="display:none" />
+        <input id="btnChangeStatus3" type="button" class="btn_green"  value="审核不通过" onclick="changeStatus(3)" style="display:none"/>
+
+        <input name="btnResetPassword" type="button" class="btn_aque" id="btnResetPassword" value="重置密码"  style="display:none"  onclick="resetPassword()" />
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+

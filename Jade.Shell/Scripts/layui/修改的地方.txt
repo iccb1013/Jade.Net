@@ -1,0 +1,15 @@
+表格
+limit 默认最大只显示30条，不管有没有设置分页，给了大于30条的数据不显示，修改为300条。
+
+
+
+css
+注释掉 a 的样式
+
+ .layui-form-radio span 
+ 字的大小
+ .layui-form-radio i
+ 圆点的大小
+
+ body
+ 字体修改

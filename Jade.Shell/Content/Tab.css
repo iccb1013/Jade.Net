@@ -1,0 +1,31 @@
+﻿@charset "utf-8";
+
+  .tabContainer{
+        width: 100%;
+        margin-top: 0px;
+        padding: 0;
+    }
+    
+     .tabContainer li {
+        float: left;
+        color: black;
+        text-align: center;
+        /*width: 24.9% !important;*/
+        font-size: 12px;
+        height: 34px;
+        line-height: 34px;
+        cursor: pointer;
+        padding:0px 12px 0px 12px;
+    }
+        
+     ul, ol { 
+        list-style:none; 
+
+     }
+
+    .tab_selected{
+        border-top:2px solid #ed6b75 ;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+   

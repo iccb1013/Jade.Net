@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8a791f4145c74f27bbdb48f1a98328e9" Name="Diagram1" ZoomLevel="34">
+        <EntityTypeShape EntityType="Jade.Model.App_Browse" Width="2.875" PointX="9.75" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Browse_History" Width="2.375" PointX="17.125" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Coupon_Info" Width="2.75" PointX="2.5" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Dict" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Member" Width="3" PointX="13" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Member_Browse_Statistics" Width="2.375" PointX="17.375" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Member_Coupon_Account" Width="2.75" PointX="17.5" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Micro_Class_Group" Width="1.5" PointX="7.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Micro_Class_Info" Width="2.375" PointX="10" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Order_Rebate_New" Width="2.375" PointX="29.625" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Point_Exchange" Width="2.25" PointX="25" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Point_Exchange_Record" Width="2.875" PointX="28" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Anti_Fake" Width="2.625" PointX="24.875" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Attribute" Width="3.25" PointX="7.75" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Browse_Statistics" Width="2.375" PointX="24.875" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Category" Width="2.375" PointX="3.625" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Group" Width="2.25" PointX="16.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Info" Width="2.5" PointX="21.25" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Order_Detail" Width="2.625" PointX="34" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Order_Master" Width="2.75" PointX="1.75" PointY="45.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Order_Record" Width="2.625" PointX="5.875" PointY="47.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Product_Pictures" Width="1.5" PointX="34" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Push_History" Width="2" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Push_Message" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Push_Theme" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Role" Width="1.875" PointX="23.25" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.RoleAuthorization" Width="2" PointX="25.75" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.Setting" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Jade.Model.User" Width="2.375" PointX="26.375" PointY="15.625" IsExpanded="true" />
+        <AssociationConnector Association="Jade.Model.FK_app_browse_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_browse_history_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_browse_history_product_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_member_coupon_account_coupon_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_member_browse_statistics_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_member_coupon_account_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_member_member_superior_agent" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_order_rebate_new_member_giver_id" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_order_rebate_new_member_reciver_id" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_point_exchange_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_info_member_modify_user_id" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_order_master_member" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_micro_class_info_micro_class_group" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_order_rebate_new_product_order_master" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_point_exchange_record_point_exchange" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_point_exchange_record_user" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_anti_fake_product_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_attribute_product_attribute_parent_id" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_attribute_product_category" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_browse_statistics_product_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_category_product_category_parent_id" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_order_detail_product_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_pictures_product_info" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_order_detail_product_order_master" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_order_record_product_order_master" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_product_order_record_user" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_push_history_push_message" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_roleAuthorization_role" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.Product_Attribute_Relation" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.Product_Category_Relation" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.Product_Group_Relation" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.RoleUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Jade.Model.FK_Product_Order_Detail_Member_Coupon_Account" />
+        <AssociationConnector Association="Jade.Model.FK_Product_Order_Master_Product_Order_Master" />
+        <AssociationConnector Association="Jade.Model.FK_Push_History_User" />
+        <AssociationConnector Association="Jade.Model.FK_product_info_member_modify_user_id1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

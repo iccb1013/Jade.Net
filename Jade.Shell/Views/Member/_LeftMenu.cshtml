@@ -1,0 +1,26 @@
+﻿
+
+<ul>
+    <li class="">
+        <a class="">
+            <i class="fa fa-key"></i>
+            会员管理
+            <i class="fa fa-angle-right arrow"></i>
+        </a>
+        <ul class="">
+@if (AuthorizationHelper.Verify("Member", HttpContext.Current))
+{
+         <li><a id="leftMenuItem_Member" href="@Url.Action("Member", "Member")">会员管理</a></li>
+}
+ @if (AuthorizationHelper.Verify("PointExchange", HttpContext.Current))
+ {
+            <li><a id="leftMenuItem_PointExchange" href="@Url.Action("PointExchange", "Member")">积分提取</a></li>
+ }
+@if (AuthorizationHelper.Verify("PushMessage", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_PushMessage" href="@Url.Action("PushMessage", "Member")">消息推送</a></li>
+}
+        </ul>
+    </li>
+
+</ul>

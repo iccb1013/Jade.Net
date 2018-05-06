@@ -1,0 +1,753 @@
+﻿
+@{
+    ViewBag.Title = "ProductEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+<script>
+    var _id = getQueryString("id");
+
+    var _mode = "create";//modify
+    var _validator;
+    var _data = null;
+
+    $(document).ready(function () {
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        _validator = $("#form").validate({
+            onfocusout: false,
+            onkeyup: false,
+            showErrors: showValidationErrors,
+            rules: {
+                "txt_product_name": "required",
+                "txt_product_code": "required",
+                "txt_real_price": {
+                    required: true,
+                    number: true,
+                    range: [0, 90000000],
+                    cash: true,
+                },
+                "txt_cost_price": {
+                    required: true,
+                    number: true,
+                    range: [0, 90000000],
+                    cash: true,
+                },
+                "txt_first_distribution_price": {
+                    required: true,
+                    number: true,
+                    range: [0, 90000000],
+                    cash: true,
+                },
+                "txt_second_distribution_price": {
+                    required: true,
+                    number: true,
+                    range: [0, 90000000],
+                    cash: true,
+                },
+                "txt_member_price": {
+                    required: true,
+                    number: true,
+                    range: [0, 90000000],
+                    cash: true,
+                },
+                "txt_serial_no": {
+                    required: true,
+                    number: true,
+                    digits: true,
+                    range: [0, 100000]
+                },
+                "txt_stock": {
+                    required: true,
+                    number: true,
+                    digits: true,
+                    range: [0, 100000]
+                },
+                "txt_sales_num": {
+                    required: true,
+                    number: true,
+                    digits: true,
+                    range: [0, 100000]
+                },
+
+            },
+            messages: {
+                "txt_product_name": "请输入名称；",
+                "txt_product_code": "请输入货号；",
+                "txt_real_price": {
+                    required: "请输入成本价；",
+                    number: "成本价请输入有效金额；",
+                    range: "成本价请介于 0 到 90000000 之间；"
+                },
+                "txt_cost_price": {
+                    required: "请输入出厂价；",
+                    number: "出厂价请输入有效金额；",
+                    range: "出厂价请介于 0 到 90000000 之间；"
+                },
+                "txt_first_distribution_price": {
+                    required: "请输入一级经销商价；",
+                    number: "一级经销商价请输入有效金额；",
+                    range: "一级经销商价请介于 0 到 90000000 之间；"
+                },
+                "txt_second_distribution_price": {
+                    required: "请输入二级经销商价；",
+                    number: "二级经销商价请输入有效金额；",
+                    range: "二级经销商价请介于 0 到 90000000 之间；"
+                },
+                "txt_member_price": {
+                    required: "请输入会员价；",
+                    number: "会员价请输入有效金额；",
+                    range: "会员价请介于 0 到 90000000 之间；"
+                },
+                "txt_serial_no": {
+                    required: "请输入排序；",
+                    number: "排序请输入有效整数字；",
+                    digits: "排序请输入有效整数字；",
+                    range: "排序请介于 0 到 100000 之间；"
+                },
+                "txt_stock": {
+                    required: "请输入库存；",
+                    number: "库存请输入有效整数字；",
+                    digits: "库存请输入有效整数字；",
+                    range: "库存请介于 0 到 100000 之间；"
+                },
+                "txt_sales_num": {
+                    required: "请输入累计售出数量；",
+                    number: "累计售出数量请输入有效整数字；",
+                    digits: "累计售出数量请输入有效整数字；",
+                    range: "累计售出数量请介于 0 到 100000 之间；"
+                },
+            }
+        });
+
+        $("#txt_real_price").change(function (e) {
+            var realPrice = parseInt($("#txt_real_price").val());
+            $("#txt_first_distribution_price").val(parseInt(realPrice + accMul(realPrice, 0.3)));
+            $("#txt_second_distribution_price").val(parseInt(realPrice + accMul(realPrice, 0.35)));
+            $("#txt_member_price").val(parseInt(realPrice + accMul(realPrice, 0.37)));
+            $("#txt_cost_price").val(parseInt(realPrice + accMul(realPrice, 0.47)));
+
+        });
+
+        load();
+    });
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        _mode = "modify";
+        $("#btnRemove").show();
+
+        var url = "/Api/Product/GetProduct/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+
+         //   _data.summary = _data.summary.replace('\r\n', '\n');
+
+            __setDto("form", _data);
+
+            loadCatalogList();
+            loadAttributeList();
+            loadThumbImage();
+            loadImageList();
+            loadVideoList();
+        });
+    }
+
+    function save() {
+
+
+        if (_validator.form() == false) {
+            return;
+        }
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        if (_data.catalog_idList == undefined || _data.catalog_idList == null || _data.catalog_idList.length == 0) {
+            layerAlert("请选择商品分类。");
+            return;
+        }
+
+        if (_data.attribute_idList == undefined || _data.attribute_idList == null || _data.attribute_idList.length == 0) {
+            layerAlert("请选择商品属性。");
+            return;
+        }
+
+        if (_data.thumb_pic == undefined || _data.thumb_pic == null) {
+            layerAlert("请上传商品列表图。");
+            return;
+        }
+
+        if (_data.pic_url == undefined || _data.pic_url == null) {
+            layerAlert("请上传商品轮播图。");
+            return;
+        }
+
+
+        var url = "/Api/Product/CreateProduct";
+        if (_mode == "modify") {
+            url = "/Api/Product/UpdateProduct";
+        }
+      
+        __getDto("form", _data);
+
+       // _data.summary = _data.summary.replace("\n", "\r\n");
+
+        __requestSaveDataApi(url, _data, _mode);
+    }
+
+    function removeData() {
+        __requestRemoveDataApi("/Api/Product/RemoveProduct/" + _id);
+    }
+
+
+    //商品列表图
+
+    function uploadThumbImage() {
+        __showFileUpload(uploadThumbImageCallback);
+    }
+
+    function uploadThumbImageCallback(data) {
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.thumb_pic= data;
+
+        loadThumbImage();
+    }
+
+    function loadThumbImage() {
+        if (_data == undefined || _data == null || _data.thumb_pic == undefined || _data.thumb_pic == null) {
+            document.getElementById('divThumbImageContainer').innerHTML = "";
+            return;
+        }
+
+        var gettpl = document.getElementById('thumbImageTemplate').innerHTML;
+        laytpl(gettpl).render(_data.thumb_pic, function (html) {
+            document.getElementById('divThumbImageContainer').innerHTML = html;
+        });
+    }
+
+    function removeThumbImage() {
+
+        _data.thumb_pic = null;
+
+        loadThumbImage();
+    }
+
+    //商品轮播图片
+
+    function uploadImage() {
+        __showFileUpload(uploadImageCallback);
+    }
+
+    function uploadImageCallback(data) {
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        if (_data.pic_url == undefined || _data.pic_url == null) {
+            _data.pic_url = new Array();
+        }
+
+        _data.pic_url[_data.pic_url.length] = data;
+
+        loadImageList();
+    }
+
+    function loadImageList() {
+        if (_data == undefined || _data == null || _data.pic_url == undefined || _data.pic_url == null) {
+            document.getElementById('divImageListContainer').innerHTML = "";
+            return;
+        }
+
+        var gettpl = document.getElementById('imageListTemplate').innerHTML;
+        laytpl(gettpl).render(_data.pic_url, function (html) {
+            document.getElementById('divImageListContainer').innerHTML = html;
+        });
+    }
+
+    function removeImageItem(url) {
+
+        for (var i = 0; i < _data.pic_url.length; i++) {
+            if (_data.pic_url[i].Url == url) {
+                _data.pic_url.splice(i, 1);
+                break;
+            }
+        }
+
+        loadImageList();
+    }
+
+    //视频
+    function uploadVideo() {
+        __showFileUpload(uploadVideoCallback);
+    }
+
+    function uploadVideoCallback(data) {
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.video_url = data;
+
+        loadVideoList();
+    }
+
+    function loadVideoList() {
+        $("#divVideoContainer").html(_data.video_url);
+    }
+
+    function removeVideoItem() {
+
+        _data.video_url = null;
+
+        loadVideoList();
+    }
+
+    //选择商品分类
+
+    function selectCatalog(target) {
+        ///_chooseUserForRoleLayerIndex =
+        layer.open({
+            type: 2,
+            area: ['80%', '80%'], //宽高
+            closeBtn: false,
+            title: "",
+            shift: _layerShift,
+            content: '/Product/ProductCatalogSelector'
+        });
+    }
+
+    function selectCatalogCallback(layerIndex, target,selectedNodes) {
+
+        layer.close(layerIndex);
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.catalog_idList = new Array();
+        _data.catalog_nameList = new Array();
+
+        $.each(selectedNodes, function (index, value) {
+            _data.catalog_idList.push(value.id);
+            _data.catalog_nameList.push(value.text);
+        });
+
+
+        loadCatalogList();
+    }
+
+    function clearSelectedCatalog(target) {
+        _data.catalog_idList = new Array();
+        _data.catalog_nameList = new Array();
+
+        $("#divCatalogContainer").html("");
+
+        loadCatalogList();
+    }
+
+    function loadCatalogList() {
+        if (_data == undefined || _data == null || _data.catalog_nameList == undefined || _data.catalog_nameList == null) {
+            document.getElementById('divCatalogContainer').innerHTML = "";
+            return;
+        }
+
+        var gettpl = document.getElementById('catalogListTemplate').innerHTML;
+        laytpl(gettpl).render(_data.catalog_nameList, function (html) {
+            document.getElementById('divCatalogContainer').innerHTML = html;
+        });
+    }
+
+
+    //选择商品属性
+
+    function selectAttribute(target) {
+        ///_chooseUserForRoleLayerIndex =
+        layer.open({
+            type: 2,
+            area: ['80%', '80%'], //宽高
+            closeBtn: false,
+            title: "",
+            shift: _layerShift,
+            content: '/Product/ProductAttributeSelector'
+        });
+    }
+
+    function selectAttributeCallback(layerIndex, target, selectedNodes) {
+
+        layer.close(layerIndex);
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.attribute_idList = new Array();
+        _data.attribute_nameList = new Array();
+
+        $.each(selectedNodes, function (index, value) {
+            _data.attribute_idList.push(value.id);
+            _data.attribute_nameList.push(value.text);
+        });
+
+
+        loadAttributeList();
+    }
+
+    function clearSelectedAttribute(target) {
+        _data.attribute_idList = new Array();
+        _data.attribute_nameList = new Array();
+
+        $("#divAttributeContainer").html("");
+
+        loadAttributeList();
+    }
+
+    function loadAttributeList() {
+        if (_data == undefined || _data == null || _data.attribute_nameList == undefined || _data.attribute_nameList == null) {
+            document.getElementById('divAttributeContainer').innerHTML = "";
+            return;
+        }
+
+        var gettpl = document.getElementById('attributeListTemplate').innerHTML;
+        laytpl(gettpl).render(_data.attribute_nameList, function (html) {
+            document.getElementById('divAttributeContainer').innerHTML = html;
+        });
+    }
+
+</script>
+
+<script id="catalogListTemplate" type="text/html">
+
+    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+
+    <div style="float:left;margin:5px; border:1px solid gray ;padding:2px 6px">
+        <span>{{ d[i] }}</span>
+    </div>
+
+    {{# } }}
+
+    <div style="clear:both">
+    </div>
+
+</script>
+
+
+
+<script id="attributeListTemplate" type="text/html">
+
+    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+
+    <div style="float:left;margin:5px; border:1px solid gray ;padding:2px 6px">
+        <span>{{ d[i] }}</span>
+    </div>
+
+    {{# } }}
+
+    <div style="clear:both">
+    </div>
+
+</script>
+
+
+<script id="thumbImageTemplate" type="text/html">
+
+    <div class="divImageMaterialContainer">
+        <table class="tableImageMaterialContainer">
+            <tr>
+                <td height="150" align="center">
+                    <a target="_blank" href="{{ d }}">
+                        <img style="max-width:166px; max-height:100%" src="{{ d }}" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td height="30" valign="middle" bgcolor="#F4F5F9">
+                    <div>
+                        <div style="float: right; margin-right: 10px;">
+                            <img src="/Content/Images/ico_remove.jpg" width="20" height="20" onclick="removeThumbImage()">
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div style="clear:both"></div>
+
+</script>
+
+<script id="imageListTemplate" type="text/html">
+
+    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+    <div class="divImageMaterialContainer">
+        <table class="tableImageMaterialContainer">
+            <tr>
+                <td height="150" align="center">
+                    <a target="_blank" href="{{ d[i] }}">
+                        <img style="max-width:166px; max-height:100%" src="{{ d[i] }}" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td height="30" valign="middle" bgcolor="#F4F5F9">
+                    <div>
+                        <div style="float: right; margin-right: 10px;">
+                            <img src="/Content/Images/ico_remove.jpg" width="20" height="20" onclick="removeImageItem('{{ d[i] }}')">
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    {{# } }}
+    <div style="clear:both"></div>
+
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">商品</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">商品名称：</td>
+                <td width="320"><input id="txt_product_name" name="txt_product_name" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="product_name" maxlength="50" /></td>
+                <td width="110" height="36">商品货号：</td>
+                <td><input id="txt_product_code" name="txt_product_code" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="product_code" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">商品分类：</td>
+                <td colspan="3">
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:98%;  box-sizing:border-box;float:left ">
+                        <div style="padding:3px 5px 3px 5px">
+                            <div id="divCatalogContainer" style="float:left">
+                            </div>
+                            <div style="float:right">
+                                <a href="javascript:void(0)" onclick="selectCatalog()">选择</a>
+                                <a href="javascript:void(0)" onclick="clearSelectedCatalog()">清除</a>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td width="110" height="36">商品属性：</td>
+                <td colspan="3">
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:98%;  box-sizing:border-box;float:left ">
+                        <div style="padding:3px 5px 3px 5px">
+                            <div id="divAttributeContainer" style="float:left">
+                            </div>
+                            <div style="float:right">
+                                <a href="javascript:void(0)" onclick="selectAttribute()">选择</a>
+                                <a href="javascript:void(0)" onclick="clearSelectedAttribute()">清除</a>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td width="110" height="36">成本价：</td>
+                <td width="320"><input id="txt_real_price" name="txt_real_price" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="real_price" maxlength="50" /></td>
+                <td width="110" height="36">出厂价：</td>
+                <td><input id="txt_cost_price" name="txt_cost_price" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="cost_price" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">一级经销商价：</td>
+                <td width="320"><input id="txt_first_distribution_price" name="txt_first_distribution_price" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="first_distribution_price" maxlength="50" /></td>
+                <td width="110" height="36">二级经销商价：</td>
+                <td><input id="txt_second_distribution_price" name="txt_second_distribution_price" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="second_distribution_price" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员价：</td>
+                <td width="320"><input id="txt_member_price" name="txt_member_price" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="member_price" maxlength="50" /></td>
+                <td width="110" height="36"></td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">白度：</td>
+                <td width="320">
+                    <select style="width:90%;" class="input_16" keyenter dtoproperty="star_white">
+                        <option value="1" >★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5" selected>★★★★★</option>
+                    </select>
+                </td>
+                <td width="110" height="36">细度：</td>
+                <td>
+                    <select style="width:96%;" class="input_16" keyenter dtoproperty="star_granularity">
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5" selected>★★★★★</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">油性：</td>
+                <td width="320">
+                    <select style="width:90%;" class="input_16" keyenter dtoproperty="star_oily">
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5" selected>★★★★★</option>
+                    </select>
+                </td>
+                <td width="110" height="36">瑕疵：</td>
+                <td>
+                    <select style="width:96%;" class="input_16" keyenter dtoproperty="star_defect">
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5" selected>★★★★★</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">排序：</td>
+                <td width="320"><input id="txt_serial_no" name="txt_serial_no" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="serial_no" maxlength="50" value="1" /></td>
+                <td width="110" height="36"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">库存：</td>
+                <td width="320">
+                    <input id="txt_stock" name="txt_stock" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="stock" maxlength="50" value="1" />
+                </td>
+                <td width="110" height="36">累计售出数量：</td>
+                <td>
+                    <input id="txt_sales_num" name="txt_sales_num" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="sales_num" maxlength="50" value="0" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" height="7">
+                </td>
+            </tr>
+            <tr>
+                <td width="110" >商品简介：</td>
+                <td width="320" colspan="3">
+                    <textarea  id="txt_summary" name="txt_summary" type="text" class="input_16" style="width:98%; "  dtoproperty="summary" maxlength="500" rows="7"></textarea>
+                </td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+            <tr>
+                <td width="110" height="36">商品列表图：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:98%;">
+                        <div style="padding:5px;">
+                            <div id="divThumbImageContainer">
+                                @*<div style="float:left">
+                                    <img src="http://wxcfile1.shengxunwei.com/FileStore/2a58d820-de07-4c8f-80b9-b5cb5a1028b4/eff4f12c-640d-4776-98be-0ccee007e9cf.jpg" />
+                                </div>
+                                <div style="clear:both"></div>*@
+                            </div>
+                            <div style="text-align:right">
+                                <a href="javascript:void(0)" onclick="uploadThumbImage()">上传新图片</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td width="110" height="36">商品介绍视频：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:98%;">
+                        <div style="padding:5px;">
+                            <div id="divVideoContainer">
+                                @*<div style="float:left">
+                                <img src="http://wxcfile1.shengxunwei.com/FileStore/2a58d820-de07-4c8f-80b9-b5cb5a1028b4/eff4f12c-640d-4776-98be-0ccee007e9cf.jpg" />
+                            </div>
+                            <div style="clear:both"></div>*@
+                            </div>
+                            <div style="text-align:right">
+                                <a href="javascript:void(0)" onclick="uploadVideo()">上传 MP4 文件</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td width="110" height="36">商品轮播图片：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:98%;">
+                        <div style="padding:5px;">
+                            <div id="divImageListContainer">
+                                @*<div style="float:left">
+                                <img src="http://wxcfile1.shengxunwei.com/FileStore/2a58d820-de07-4c8f-80b9-b5cb5a1028b4/eff4f12c-640d-4776-98be-0ccee007e9cf.jpg" />
+                            </div>
+                            <div style="clear:both"></div>*@
+                            </div>
+                            <div style="text-align:right">
+                                <a href="javascript:void(0)" onclick="uploadImage()">上传新图片</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        <input name="btnRemove" type="button" class="btn_red" id="btnRemove" value="下 架" style="display:none" onclick="removeData()" />
+    </div>
+    <div style="float:right">
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+
+
+@Helpers.FileUpload()

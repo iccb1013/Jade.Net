@@ -1,0 +1,21 @@
+﻿@model Jade.Shell.Models.PushMessageMobilePageViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, width=device-width" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <title>@Model.Message.title</title>
+</head>
+<body>
+    @Html.Raw(Model.Message.richContent)
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿
+
+<ul>
+    <li class="">
+        <a class="">
+            <i class="fa fa-key"></i>
+            微课堂
+            <i class="fa fa-angle-right arrow"></i>
+        </a>
+        <ul class="">
+@if (AuthorizationHelper.Verify("MicroClass", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_Group" href="@Url.Action("Group", "MicroClass")">课程管理</a></li>
+}
+        </ul>
+    </li>
+
+</ul>

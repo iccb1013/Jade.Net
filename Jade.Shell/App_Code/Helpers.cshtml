@@ -1,0 +1,162 @@
+﻿@helper FileUpload()
+{
+    <script type="text/javascript" src='/Scripts/jquery.form.js'></script>
+
+    <script type="text/html" id="divUpload">
+        <div style="margin-left: 10px; margin-right: 10px; margin-top: 20px; margin-bottom: 10px;">
+            <div id="divFileUpload_Mask" style="display: none; position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px; background-color: white">
+                <div style="margin-left: 30px; margin-top: 20px;">正在上传，请稍候...</div>
+            </div>
+
+            <div style="width: 100%;">
+                <div>
+                    <span class="font_blue_20">文件上传 </span>
+                </div>
+
+
+                <div style="width: 100%; margin-left: 0px; margin-top: 20px;">
+                    <form id="formFileUpload">
+                        <input type="hidden" id="txtFileUpload_Id" name="txtFileUpload_Id" />
+                        <input type="hidden" id="txtFileUpload_UserId" name="txtFileUpload_UserId" />
+                        <input type="hidden" id="txtFileUpload_Domain" name="txtFileUpload_Domain" />
+                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="130" height="36">
+                                    <input name="txtFileUpload_Name" type="file" class="input_16" style="width: 100%;" id="txtFileUpload_Name" />
+                                </td>
+                            </tr>
+                           
+                        </table>
+
+                    </form>
+                </div>
+                <div style="width: 100%; margin-top: 20px; margin-left: 0px;">
+                    <div style="float: right">
+                        <input name="btnSave" type="button" class="btn_blue" id="btnSave" value="上 传" onclick="__fileUpload()" />
+
+                        <input name="btnCancel" type="button" class="btn_blue" id="btnCancel" value="取 消" onclick="__closeFileUpload()" />
+
+                    </div>
+                    <div style="clear: both">
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </script>
+
+    <script type="text/javascript">
+
+        var __fileUploadDivHtml;
+        var __fileUploadLayerIndex;
+
+        $(document).ready(function () {
+            __fileUploadDivHtml = $("#divUpload").html();
+            $("#divUpload").html("");
+        });
+
+        function __showFileUpload(callback) {
+                       
+            __fileUploadLayerIndex = layer.open({
+                type: 1,
+                area: ['500px', '220px'], //宽高
+                closeBtn: false,
+                title: "",
+                shift: _layerShift,
+                content: __fileUploadDivHtml,
+                success: function (layero, index) {
+                    $(layero).focus();
+
+                    $("#formFileUpload").submit(function () {
+
+                        $("#formFileUpload").ajaxSubmit({
+                            type: "post",
+                            dataType: "json",
+                            url: "/Api/File/Upload",
+                            success: function (data) {
+                                layer.close(__fileUploadLayerIndex);
+                                if (data.Successful) {
+
+                                    if (callback != undefined && callback != null) {
+                                        callback(data.Data);
+                                    }
+
+                                } else {
+                                    handleApiResult(data);
+                                }
+                            },
+                            error: function (xmlHttpRequest) {
+                                layer.close(__fileUploadLayerIndex);
+                                alert("Error: " + xmlHttpRequest.status);
+                            }
+                        });
+                        return false;
+                    });
+
+                }
+            });
+        }
+
+        function __closeFileUpload() {
+            layer.close(__fileUploadLayerIndex);
+        }
+
+        function __fileUpload() {
+            var fileName = $("#txtFileUpload_Name").val();
+
+            if (fileName == "") {
+                layerAlert("请选择要上传的文件。");
+                return;
+            }
+
+            var fileExtName = fileName.substr(fileName.lastIndexOf(".")).toLowerCase();//获得文件后缀名
+
+            if (fileExtName != '.jpeg' && fileExtName != '.jpg' && fileExtName != '.gif' && fileExtName != '.png' && fileExtName != '.mp4') {
+                layerAlert("请上传图片文件，您可以上传的文件类型：jpeg，jpg，gif，png，mp4。");
+                return;
+            }
+
+            $("#divFileUpload_Mask").show();
+            $("#formFileUpload").submit();
+        }
+
+    </script>
+
+}
+
+
+@*当需要在前端画面用脚本动态鉴权时使用*@
+@helper RoleAuthorization(dynamic ViewBag) { 
+
+    <script>
+
+        var _notBelongToAnyRole = @ViewBag.UserContext.NotBelongToAnyRole.ToString().ToLower();
+        var _authorizationArray = new Array();
+
+        @foreach (string authorizationKey in ViewBag.UserContext.AuthorizationKeyList)
+        {
+            <text>
+            _authorizationArray[_authorizationArray.length] = '@authorizationKey';
+            </text>
+            }
+
+
+            //判断当前用户是否有指定的权限
+        function authorizationVerify(key) {
+
+            if(_notBelongToAnyRole)
+                return true;
+
+            for (var i = 0; i < _authorizationArray.length; i++) {
+                if (_authorizationArray[i] == key)
+                    return true;
+            }
+
+            return false;
+
+        }
+
+    </script>
+}

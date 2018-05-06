@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @*@Styles.Render("~/Scripts/jqueryui/jquery-ui.css")*@
+
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/Scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/Scripts/validate/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/layer/layer.js")
+    @Scripts.Render("~/Scripts/laytpl.js")
+    @Scripts.Render("~/Scripts/laypage/laypage.js")
+    @Scripts.Render("~/Scripts/laydate/laydate.js")
+    @Scripts.Render("~/Scripts/math.js")
+    @*@Scripts.Render("~/Scripts/jqueryui/jquery-ui.js")*@
+
+    @Styles.Render("~/Scripts/layui/css/layui.css")
+    @Scripts.Render("~/Scripts/layui/layui.all.js")
+
+    <style>
+         body, html {
+           background:#E9EBEB;
+        }
+
+}
+      
+    </style>
+
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+                 
+           
+
+        });
+
+    
+     
+
+    </script>
+
+</head>
+<body>
+    <div class="header-wrap">
+        <div class="header-wrap-inner">
+            <div style="float:left;color:white;line-height:35px;font-size:18px;cursor:pointer" onclick="goUrl('/Home/PersonalCenter')">
+                张寿宴玉雕工作室
+            </div>
+            <ul class="user-op">
+                <li><a href="#">@ViewBag.UserContext.User.Name</a><span>|</span></li>
+                <li><a href="/Home/Logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="header-nav-wrap">
+        <div class="header-nav-wrap-inner">
+            <ul>
+                @if (AuthorizationHelper.Verify("L1_Product", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("ProductCenter","Product")" class="@if(ViewBag.MainMenu == "Product"){@Html.Raw("active")}">商品中心</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_ProductPurchase", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("ProductPurchase", "ProductPurchase")" class="@if(ViewBag.MainMenu == "ProductPurchase"){@Html.Raw("active")}">采购中心</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_Order", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("OrderCenter", "Order")" class="@if(ViewBag.MainMenu == "Order"){@Html.Raw("active")}">订单中心</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_Storehouse", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Index","Storehouse")" class="@if(ViewBag.MainMenu == "Storehouse"){@Html.Raw("active")}">仓储中心</a></li>
+                }
+
+                <li><a href="@Url.Action("BuildingConstraction", "Home")" class="@if(ViewBag.MainMenu == "Home"){@Html.Raw("active")}">包装中心</a></li>
+
+                @if (AuthorizationHelper.Verify("L1_Delivery", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("MonthlyOverview", "Delivery")" class="@if(ViewBag.MainMenu == "Delivery"){@Html.Raw("active")}">配送中心</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_Finance", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Overview", "Finance")" class="@if(ViewBag.MainMenu == "Finance"){@Html.Raw("active")}">财务中心</a></li>
+                }
+                @if (AuthorizationHelper.Verify("L1_DataCenter", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Overview", "DataCenter")" class="@if(ViewBag.MainMenu == "DataCenter"){@Html.Raw("active")}">统计中心</a></li>
+                }
+
+                <li><a href="@Url.Action("NewsCatalogView", "News")" class="@if(ViewBag.MainMenu == "News"){@Html.Raw("active")}">新闻中心</a></li>
+
+                <li><a href="@Url.Action("User", "Settings")" class="@if(ViewBag.MainMenu == "Settings"){@Html.Raw("active")}">系统管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="page-container-wrap">
+        <div class="page-container-wrap-inner" style="width: 1082px;">
+           
+            <div class="main" style="">
+
+                @RenderBody()
+
+            </div>
+        </div>
+        <div class="footer-wrap">
+            <p>张寿宴玉雕工作室</p>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/common")
+
+    @Scripts.Render("~/Scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/Scripts/validate/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/layer/layer.js")
+    @Scripts.Render("~/Scripts/laytpl.js")
+    @Scripts.Render("~/Scripts/laypage/laypage.js")
+    @Scripts.Render("~/Scripts/laydate/laydate.js")
+    @Scripts.Render("~/Scripts/math.js")
+
+    @Styles.Render("~/Scripts/select2/css/select2.min.css")
+    @Scripts.Render("~/Scripts/select2/js/select2.min.js")
+
+    @Styles.Render("~/Scripts/layui/css/layui.css")
+    @Scripts.Render("~/Scripts/layui/layui.all.js")
+
+
+    <script type="text/javascript">
+        // 验证值小数位数不能超过两位
+        jQuery.validator.addMethod("cash", function (value, element) {
+            var decimal = /^-?\d+(\.\d{1,2})?$/;
+            return this.optional(element) || (decimal.test(value));
+        }, $.validator.format("金额的小数位数不能超过两位；"));
+
+
+        jQuery.validator.addMethod("cellphone", function (value, element) {
+            if (value.length > 0 && value.length != 11)
+                return false;
+
+            var mobile = /^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            return this.optional(element) || (mobile.test(value));
+
+        }, "请正确填写手机号码；");
+
+    </script>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>

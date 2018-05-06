@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "CouponEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+<script>
+    var _id = getQueryString("id");
+
+    var _mode = "create";//modify
+    var _validator;
+    var _data = null;
+
+    $(document).ready(function () {
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        _validator = $("#form").validate({
+            onfocusout: false,
+            onkeyup: false,
+            showErrors: showValidationErrors,
+            rules: {
+                "txt_name": "required",
+                "txt_discount": {
+                    required: true,
+                    number: true,
+                    range: [0.01, 9.99],
+                    cash: true,
+                }
+            },
+            messages: {
+                "txt_name": "请输入优惠券名；",
+                "txt_discount": {
+                    required: "请输入折扣率；",
+                    number: "请输入正确的折扣率；",
+                    range: "请输入正确的折扣率，范围 0.01 - 9.99；",
+                    cash: "请输入正确的折扣率；"
+                }
+            }
+        });
+
+        setLaydate();
+
+        load();
+    });
+
+    function setLaydate() {
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#txt_start_time', //指定元素
+               // range: '~',
+                theme: '#4a76ad'
+                , type: 'datetime'
+            });
+
+            laydate.render({
+                elem: '#txt_end_time', //指定元素
+                // range: '~',
+                theme: '#4a76ad'
+                , type: 'datetime'
+            });
+        });
+    }
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        _mode = "modify";
+        $("#btnRemove").show();
+
+        var url = "/Api/Coupon/GetCoupon/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+            __setDto("form", _data);
+
+
+
+        });
+    }
+
+    function save() {
+
+        if (_validator.form() == false) {
+            return;
+        }
+
+        var url = "/Api/Coupon/CreateCoupon";
+        if (_mode == "modify") {
+            url = "/Api/Coupon/UpdateCoupon";
+        }
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        __getDto("form", _data);
+
+        __requestSaveDataApi(url, _data, _mode);
+    }
+
+    function removeData() {
+        __requestRemoveDataApi("/Api/Coupon/RemoveCoupon/" + _id);
+    }
+
+
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">优惠券</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">名称：</td>
+                <td><input id="txt_name" name="txt_name" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="name" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">打折率：</td>
+                <td>
+                    <input id="txt_discount" name="txt_discount" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="discount" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">启用时间：</td>
+                <td>
+                    <input id="txt_start_time" name="txt_start_time" type="text" class="input_16 " style="width:96%;" keyenter dtoproperty="start_time"/>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">失效时间：</td>
+                <td>
+                    <input id="txt_end_time" name="txt_end_time" type="text" class="input_16 " style="width:96%;" keyenter dtoproperty="end_time" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        <input name="btnRemove" type="button" class="btn_red" id="btnRemove" value="删 除" style="display:none" onclick="removeData()" />
+    </div>
+    <div style="float:right">
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+
+
+

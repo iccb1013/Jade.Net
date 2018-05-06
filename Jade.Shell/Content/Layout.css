@@ -1,0 +1,238 @@
+html{
+    position: relative!important;
+    min-height: 100%;
+}
+html,body{
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    /*background:#E9EBEB;*/
+    height: auto!important;
+    min-height: 100%;
+    font-size:12px;
+}
+body{
+
+}
+a{
+    text-decoration: none;
+}
+ul,li{
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+.header-wrap{
+    width: 100%;
+    height:35px;
+    background: #325883;
+    position: fixed;
+    top:0px;
+    left: 0px;
+    z-index: 3;
+}
+.header-wrap-inner{
+    width: 1082px;
+    height: 100%;
+    margin: auto auto;
+    position: relative;
+    background: #325883;
+}
+.header-wrap-inner .user-op{
+    float: right;
+    line-height: 35px;
+    font-size: 12px;
+    color: white;
+}
+.header-wrap-inner .user-op a{
+    color: white;
+}
+.header-wrap-inner .user-op li{
+    float: left;
+}
+.header-wrap-inner .user-op span{
+    margin-left:5px;
+    margin-right: 5px;
+}
+.header-wrap-inner .logo img{
+    height: 30px;
+}
+.header-nav-wrap{
+    position: fixed;
+    left: 0px;
+    top:35px;
+    width: 100%;
+    height:40px;
+    background: white;
+    box-shadow: 0px 5px 10px #e0e3e9;
+    z-index: 3;
+}
+.header-nav-wrap-inner{
+    width: 1082px;
+    height: 100%;
+    margin: auto auto;
+    position: relative;
+    background: white;
+}
+.header-nav-wrap-inner ul{
+    display:flex;
+
+}
+.header-nav-wrap-inner ul li{
+    float: left;
+    margin-right:10px;
+    text-align:center;
+	
+}
+.header-nav-wrap-inner a{
+    display: inline-block;
+    height: 40px;
+    box-sizing: border-box;
+    border-bottom: 2px solid transparent;
+    line-height:40px;
+    color: #507299;
+    padding-left:20px;
+    padding-right:20px;
+    font-size: 12px;
+}
+.header-nav-wrap-inner a:hover{
+    border-color:#779dcc ;
+}
+.header-nav-wrap-inner li .active{
+    border-color:#315583;
+}
+
+.page-container-wrap{
+    position: absolute;
+    width: 100%;
+    bottom:50px;
+    top: 100px;
+    box-sizing: border-box;
+    height: auto!important;
+}
+.page-container-wrap-inner{
+    display: flex;
+    margin: auto auto;
+    border-radius: 3px;
+    background: white;
+    box-shadow: 4px 3px 2px #e0e3e9;
+    box-sizing: border-box;
+    min-height: 100%!important;
+    height: auto!important;
+}
+
+.page-container-wrap-inner > .nav-wrap{
+    background: #f9fbfd;
+    width: 240px;
+    border-right: 1px dashed #F2F2F2;
+    box-sizing: border-box;
+}
+.page-container-wrap-inner:after{
+
+}
+
+.nav-wrap ul li a{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-indent: 30px;
+    box-sizing: border-box;
+    color: black;
+    cursor: pointer;
+    overflow: hidden;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently not supported by any browser */
+}
+.nav-wrap ul>li>ul{
+    display: none;
+    background: white;
+}
+.nav-wrap ul>li>ul>li{
+    box-sizing: border-box;
+    border-left: 0px solid lightsteelblue;
+}
+.nav-wrap ul li>ul>li>a{
+    text-indent:40px;
+    box-sizing: border-box;
+}
+.nav-wrap ul li>ul>li>.active{
+    background: lightsteelblue;
+    color: white;
+}
+.nav-wrap ul>.open ul{
+    display: block;
+}
+.nav-wrap ul a:hover{
+    background: #92adcf;
+    color: white;
+}
+.nav-wrap >ul >li> .active{
+    background: #4a76ad;
+    color: white;
+}
+.nav-wrap a{
+    color: inherit;
+    font-size: 12px;
+}
+.nav-wrap i{
+    display: inline;
+    margin-right: 5px;
+    position: absolute;
+    line-height:30px;
+    font-style: normal;
+}
+.nav-wrap .arrow{
+    float: right;
+    margin-right: 10px;
+}
+
+.page-container-wrap-inner > .main{
+    flex: 1;
+    position: relative;
+
+    padding:10px;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+.footer-wrap{
+    display: block;
+    text-align: center;
+    color: #a0a09f;
+    font-size: 12px;
+}
+.footer-wrap p{
+    margin: 0px;
+    padding:10px;
+}
+
+
+/*  菜单前面图标样式  */
+.nav-wrap li a i:first-child{
+    top: 0px;
+    left: 0px;
+    text-indent: 20px;
+}
+
+/* 菜单右边小箭头样式 */
+.nav-wrap li a i:last-child{
+    position: absolute;
+    margin-right: 0px;
+    top: 0px;
+    right: 20px;
+}
+
+/* 一级菜单样式 */
+.nav-wrap>ul>li>a{
+    text-indent:40px;
+}
+
+/* 二级菜单样式 */
+.nav-wrap>ul>li>ul>li>a{
+    text-indent:50px;
+}

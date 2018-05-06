@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{51DD9FA7-1E65-46BD-9A80-9509785BAA92}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jade.Model.Dto</RootNamespace>
+    <AssemblyName>Jade.Model.Dto</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppDto\AppApiResult.cs" />
+    <Compile Include="AppDto\Member\MemberChangePwdArgs.cs" />
+    <Compile Include="AppDto\Member\MemberResetPasswordArgs.cs" />
+    <Compile Include="AppDto\Member\MemberSendCodeArgs.cs" />
+    <Compile Include="AppDto\Member\MemberValidationCodeArgs.cs" />
+    <Compile Include="AppDto\Order\AppGetProductOrderMasterListArgs.cs" />
+    <Compile Include="AppDto\Order\ProductOrderMasterAppDto.cs" />
+    <Compile Include="AppDto\Order\ProductOrderDetailAppDto.cs" />
+    <Compile Include="AppDto\Order\ProductOrderRecordAppDto.cs" />
+    <Compile Include="AppDto\Point\PointExchangeAppDto.cs" />
+    <Compile Include="AppDto\Order\OrderRebateAppDto.cs" />
+    <Compile Include="AppDto\Product\AppGetProductAttributeListArgs.cs" />
+    <Compile Include="AppDto\Product\AppGetProductGroupListArgs.cs" />
+    <Compile Include="AppDto\Product\AppGetProductInfoListArgs.cs" />
+    <Compile Include="AppDto\Product\ProductAttributeAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductAttributeSimpleAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductCategoryAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductCategoryInAttributeAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductCategorySimpleAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductGroupAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductInfoAppDto.cs" />
+    <Compile Include="AppDto\Browse\AppBrowseRecordedArgs.cs" />
+    <Compile Include="AppDto\Browse\AppProductBrowseHistoryArgs.cs" />
+    <Compile Include="AppDto\Coupon\CouponInfoAppDto.cs" />
+    <Compile Include="AppDto\Coupon\MemberCouponAccountAppDto.cs" />
+    <Compile Include="AppDto\Coupon\AppGetMemberCouponAccountListArgs.cs" />
+    <Compile Include="AppDto\Member\MemberAppDto.cs" />
+    <Compile Include="AppDto\Member\MemberLoginArgs.cs" />
+    <Compile Include="AppDto\Member\MemberRegisterArgs.cs" />
+    <Compile Include="AppDto\MicroClass\AppGetMicroClassGroupListArgs.cs" />
+    <Compile Include="AppDto\MicroClass\AppGetMicroClassInfoListArgs.cs" />
+    <Compile Include="AppDto\MicroClass\MicroClassGroupAppDto.cs" />
+    <Compile Include="AppDto\MicroClass\MicroClassInfoAppDto.cs" />
+    <Compile Include="AppDto\Product\ProductPictureAppDto.cs" />
+    <Compile Include="AppDto\Order\AppGetOrderRebateListArgs.cs" />
+    <Compile Include="Dto\Coupon\Coupon_InfoDto.cs" />
+    <Compile Include="Dto\Coupon\DistributeCouponToMemberArgs.cs" />
+    <Compile Include="Dto\Coupon\DistributeCouponToAllMemberArgs.cs" />
+    <Compile Include="Dto\Member\ChangeMemberStatusArgs.cs" />
+    <Compile Include="Dto\Member\MemberDto.cs" />
+    <Compile Include="Dto\MicroClass\Micro_Class_GroupDto.cs" />
+    <Compile Include="Dto\MicroClass\Micro_Class_InfoDto.cs" />
+    <Compile Include="Dto\Order\CreateOrderRecordArgs.cs" />
+    <Compile Include="Dto\Order\Product_Order_DetailDto.cs" />
+    <Compile Include="Dto\Order\Product_Order_MasterInListDto.cs" />
+    <Compile Include="Dto\Order\Product_Order_MasterDto.cs" />
+    <Compile Include="Dto\Order\Product_Order_RecordDto.cs" />
+    <Compile Include="Dto\Point\Point_ExchangeDto.cs" />
+    <Compile Include="Dto\Point\UpdatePointExchangeStatusArgs.cs" />
+    <Compile Include="Dto\ProductQRCode\Product_Anti_FakeDto.cs" />
+    <Compile Include="Dto\Product\Product_AttributeDto.cs" />
+    <Compile Include="Dto\Product\Product_CategoryDto.cs" />
+    <Compile Include="Dto\Product\Product_InfoDto.cs" />
+    <Compile Include="Dto\PushMessage\Push_HistoryInListDto.cs" />
+    <Compile Include="Dto\PushMessage\Push_HistoryDto.cs" />
+    <Compile Include="Dto\PushMessage\Push_MessageInListDto.cs" />
+    <Compile Include="Dto\PushMessage\Push_MessageDto.cs" />
+    <Compile Include="Dto\Role\AddUserListToRoleArgs.cs" />
+    <Compile Include="Dto\Role\RoleDto.cs" />
+    <Compile Include="Dto\Role\RoleInListDto.cs" />
+    <Compile Include="Dto\User\UpdatePasswordArgs.cs" />
+    <Compile Include="Dto\User\UserDto.cs" />
+    <Compile Include="Dto\User\UserInListDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sheng.Web.Infrastructure\Sheng.Web.Infrastructure.csproj">
+      <Project>{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}</Project>
+      <Name>Sheng.Web.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AppDto\注意.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

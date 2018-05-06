@@ -1,0 +1,39 @@
+﻿
+
+<ul>
+    <li class="">
+        <a class="">
+            <i class="fa fa-key"></i>
+            商品管理
+            <i class="fa fa-angle-right arrow"></i>
+        </a>
+        <ul class="">
+@if (AuthorizationHelper.Verify("Order", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_Order" href="@Url.Action("Order", "Product")">订单管理</a></li>
+}
+@if (AuthorizationHelper.Verify("Product", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_Product" href="@Url.Action("Product", "Product")">商品管理</a></li>
+}
+@if (AuthorizationHelper.Verify("ProductCatalog", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_ProductCatalog" href="@Url.Action("ProductCatalog", "Product")">分类管理</a></li>
+}
+            @*<li><a id="leftMenuItem_MessagePush" href="@Url.Action("NewsCatalogView", "Product")">分组管理</a></li>*@
+@if (AuthorizationHelper.Verify("ProductAttribute", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_ProductAttribute" href="@Url.Action("ProductAttribute", "Product")">属性管理</a></li>
+}
+@*@if (AuthorizationHelper.Verify("ProductQRCode", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_ProductQRCode" href="@Url.Action("ProductQRCode", "Product")">防伪二维码</a></li>
+}*@
+@if (AuthorizationHelper.Verify("Coupon", HttpContext.Current))
+{
+            <li><a id="leftMenuItem_Coupon" href="@Url.Action("Coupon", "Product")">优惠券管理</a></li>
+}
+        </ul>
+    </li>
+
+</ul>

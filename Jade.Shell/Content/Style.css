@@ -1,0 +1,87 @@
+﻿@charset "utf-8";
+
+
+img{
+    display:block;
+}
+
+
+.transparent_class {  
+      filter:alpha(opacity=20);  
+      -moz-opacity:0.2;  
+      -khtml-opacity: 0.2;  
+      opacity: 0.2;  
+}  
+
+
+.divBorder_aque {
+	
+	border: 1px solid #C4D6E8;
+     border-radius:3px;
+}
+
+.divBorder_gray {
+	
+	border: 1px solid #BBBBBB;
+	font-size: 12px;
+}
+
+.divBorder_lightgray {
+	
+	border: 1px solid #DDDDDD;
+     border-radius:3px;
+}
+
+.divDotBorder_gray {
+	padding: 4px;
+	border: 1px dotted #BBBBBB;
+}
+
+.divDotLine{
+	background-image: url(/Content/Images/dotLine.png);
+	background-repeat: repeat-x;
+	height:1px;	
+}
+
+
+     
+	
+.tableHeader{
+	height:40px;
+    line-height:40px;
+	/*background-image: url(../Images/tableTitle_bg.jpg);
+	background-repeat: repeat-x;*/	
+}
+
+
+/*.NotifyCount {
+    font-size: 11px;
+    color: white;
+    background-color: red;
+    padding: 1px 5px;
+    border-radius: 3px;
+}*/
+
+
+.NotifyCount {
+    font-size: 11px;
+    font-weight:bold;
+    color: red;
+    padding: 1px 5px;
+}
+
+.PopupWindowTitle {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
+    background-image: -webkit-linear-gradient( #6D93C0, #4772A7);
+    background-image: -moz-linear-gradient( #6D93C0, #4772A7);
+    background-image: linear-gradient( #6D93C0, #4772A7);
+}
+
+.divImageMaterialContainer{
+    float:left;
+    margin-right:10px;
+}

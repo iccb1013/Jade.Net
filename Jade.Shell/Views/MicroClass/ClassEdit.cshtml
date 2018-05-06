@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewBag.Title = "ClassEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+<script>
+    var _id = getQueryString("id");
+    var _groupId = getQueryString("groupId");
+    var _groupName = getQueryString("groupName");
+
+    var _mode = "create";//modify
+    var _validator;
+    var _data = null;
+
+    $(document).ready(function () {
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        _validator = $("#form").validate({
+            onfocusout: false,
+            onkeyup: false,
+            showErrors: showValidationErrors,
+            rules: {
+                "txt_name": "required"
+            },
+            messages: {
+                "txt_name": "请输入主题；"
+            }
+        });
+
+        load();
+    });
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        _mode = "modify";
+        $("#btnRemove").show();
+
+        var url = "/Api/MicroClass/GetMicroClassInfo/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+            __setDto("form", _data);
+
+            loadThumbImage();
+            loadVideoList();
+
+        });
+    }
+
+    function save() {
+
+        if (_validator.form() == false) {
+            return;
+        }
+
+        var url = "/Api/MicroClass/CreateMicroClassInfo";
+        if (_mode == "modify") {
+            url = "/Api/MicroClass/UpdateMicroClassInfo";
+        }
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        __getDto("form", _data);
+
+        if (_groupId != null && _groupId != "" && _groupId != "null") {
+            _data.group_id = _groupId;
+        }
+
+        __requestSaveDataApi(url, _data, _mode);
+    }
+
+    function removeData() {
+        __requestRemoveDataApi("/Api/MicroClass/RemoveMicroClassInfo/" + _id);
+    }
+
+    //图片
+
+    function uploadThumbImage() {
+        __showFileUpload(uploadThumbImageCallback);
+    }
+
+    function uploadThumbImageCallback(data) {
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.img_url = data;
+
+        loadThumbImage();
+    }
+
+    function loadThumbImage() {
+        if (_data == undefined || _data == null || _data.img_url == undefined || _data.img_url == null) {
+            document.getElementById('divThumbImageContainer').innerHTML = "";
+            return;
+        }
+
+        var gettpl = document.getElementById('thumbImageTemplate').innerHTML;
+        laytpl(gettpl).render(_data.img_url, function (html) {
+            document.getElementById('divThumbImageContainer').innerHTML = html;
+        });
+    }
+
+    function removeThumbImage() {
+
+        _data.img_url = null;
+
+        loadThumbImage();
+    }
+
+    //MP3
+
+    function uploadVideo() {
+        __showFileUpload(uploadVideoCallback);
+    }
+
+    function uploadVideoCallback(data) {
+
+        if (_data == undefined || _data == null) {
+            _data = new Object();
+        }
+
+        _data.mp3_url = data;
+
+        loadVideoList();
+    }
+
+    function loadVideoList() {
+        $("#divVideoContainer").html(_data.mp3_url);
+    }
+
+    function removeVideoItem() {
+
+        _data.mp3_url = null;
+
+        loadVideoList();
+    }
+
+</script>
+
+<script id="thumbImageTemplate" type="text/html">
+    <div class="divImageMaterialContainer">
+        <table class="tableImageMaterialContainer">
+            <tr>
+                <td height="150" align="center">
+                    <a target="_blank" href="{{ d }}">
+                        <img style="max-width:166px; max-height:100%" src="{{ d }}" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td height="30" valign="middle" bgcolor="#F4F5F9">
+                    <div>
+                        <div style="float: right; margin-right: 10px;">
+                            <img src="/Content/Images/ico_remove.jpg" width="20" height="20" onclick="removeThumbImage()">
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="clear:both"></div>
+</script>
+
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">课程</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">主题：</td>
+                <td><input id="txt_topic_info_title" name="txt_topic_info_title" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="topic_info_title" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">讲师介绍：</td>
+                <td><input id="txt_lecturer_text" name="txt_lecturer_text" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="lecturer_text" maxlength="20" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">图片：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:96%;">
+                        <div style="padding:5px;">
+                            <div id="divThumbImageContainer">
+                                @*<div style="float:left">
+                                <img src="http://wxcfile1.shengxunwei.com/FileStore/2a58d820-de07-4c8f-80b9-b5cb5a1028b4/eff4f12c-640d-4776-98be-0ccee007e9cf.jpg" />
+                            </div>
+                            <div style="clear:both"></div>*@
+                            </div>
+                            <div style="text-align:right">
+                                <a href="javascript:void(0)" onclick="uploadThumbImage()">上传新图片</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="110" height="36">MP3：</td>
+                <td>
+                    <div class="divBorder_gray" style="margin-bottom:5px;width:96%;">
+                        <div style="padding:5px;">
+                            <div id="divVideoContainer">
+                                @*<div style="float:left">
+                                <img src="http://wxcfile1.shengxunwei.com/FileStore/2a58d820-de07-4c8f-80b9-b5cb5a1028b4/eff4f12c-640d-4776-98be-0ccee007e9cf.jpg" />
+                            </div>
+                            <div style="clear:both"></div>*@
+                            </div>
+                            <div style="text-align:right">
+                                <a href="javascript:void(0)" onclick="uploadVideo()">上传 MP3 文件</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        <input name="btnRemove" type="button" class="btn_red" id="btnRemove" value="删 除" style="display:none" onclick="removeData()" />
+    </div>
+    <div style="float:right">
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+@Helpers.FileUpload()

@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.MainMenu = "MicroClass";
+    ViewBag.SubLeftMenu = "Group";
+
+    ViewBag.EditView = "/MicroClass/GroupEdit";
+    ViewBag.EditViewAreaWidth = "600px";
+    ViewBag.EditViewAreaHeight = "250px";
+
+    ViewBag.LoadDataApiUrl = "/Api/MicroClass/GetMicroClassGroupList";
+
+    ViewBag.Title = "课程组";
+    Layout = "~/Views/Shared/_LayoutNormalListView2.cshtml";
+}
+
+
+
+
+@section script{
+
+    <script language="javascript">
+
+        function onReady() {
+        }
+
+        function initTable() {
+            var args = getTableRenderArgs();
+
+            layui.use('table', function () {
+                var table = layui.table;
+
+                //展示已知数据
+                __table = table.render(args);
+
+                //监听工具条
+                table.on('tool(table)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值
+
+                    if (layEvent === 'selectGroup') {
+                        //alert(obj.data.id);
+                        window.location.href = "/MicroClass/Class?groupId=" + obj.data.id + "&groupName=" + escape(obj.data.name);
+                    }
+                });
+            });
+        }
+
+        function getTableRenderArgs() {
+
+            var args = {
+                elem: '#table'
+                   , width: 790
+                   , height: 450
+                  , cols: [[ //标题栏
+                      { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                       {
+                           field: 'Number', title: '名称', width: 120, fixed: 'left', sort: false,
+                           templet: "<div><a href='javascript:void(0)' onclick=\"modify('{{d.id}}')\">{{d.name}}</a></div>"
+                       },
+                   { field: 'create_time', title: '创建时间', width: 150, sort: false, templet: '#titleTpl_create_time' },
+                   { field: 'status', title: '状态', width: 80, sort: false, templet: '#titleTpl_status' },
+                  ]]
+              , skin: 'row' //表格风格
+              , even: true
+                //   , page: true //是否显示分页
+                // , limits: [5, 7, 10]
+                //  , limit: 5 //每页默认显示的数量
+            };
+
+            args.cols[0].push(
+                    { toolbar: '#barDemo', title: '', width: 120, fixed: 'right' }
+                );
+            //else {
+            //    args.cols[0].push(
+            //        { toolbar: '#barDemo2', title: '', width: 120, fixed: 'right' }
+            //    );
+            //}
+
+            return args;
+        }
+
+        function getLoadDataArgs(targetPage) {
+
+            var args = new Object();
+            args.PagingInfo = new Object();
+            args.PagingInfo.CurrentPage = targetPage || 1;
+            args.OrderBy = "create_time DESC";
+            args.Parameters = new Object();
+
+            __getDto("divSearchArea", args.Parameters);
+
+            return args;
+        }
+
+
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <input type="button" class="btn_aqua_small" value="管理课程" lay-event="selectGroup" />
+    </script>
+
+
+    <script type="text/html" id="titleTpl_create_time">
+        {{#  if(d.create_time != null && d.create_time != ""){ }}
+        @*{{# var createTime =  d.create_time.substr(0,10) }}*@
+        {{# var createTime =  d.create_time }}
+        {{ createTime }}
+        {{#  } }}
+    </script>
+
+    <script type="text/html" id="titleTpl_status">
+        {{#  if(d.status == 0){ }}
+            无效
+        {{#  }else{ }}
+            有效
+        {{#  } }}
+    </script>
+
+}
+
+
+@section  searchArea{
+    <div id="divSearchArea" class="divBorder_aque" style="margin:15px 15px 0px 15px;padding:10px 10px 0px 10px;">
+        <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div>
+                        <div style="float:left;margin-right:25px;margin-bottom:10px;">
+                            关键字：
+                            <input id="txtKeyword" name="txtKeyword" type="text" class="input_16" style="width:150px;" keyenter dtoproperty="Keyword" />
+                        </div>
+
+                        <div style="clear:both"></div>
+                    </div>
+                </td>
+                <td width="100" align="right" valign="top">
+                    <input type="button" value="查询" class="btn_white" onclick="loadData()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+
+

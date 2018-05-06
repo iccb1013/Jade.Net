@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "CreateOrderRecord";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+<script>
+    //var _id = getQueryString("id");
+    var _orderId = getQueryString("orderId");
+    var _currentStatus = getQueryString("currentStatus");
+    var _newStatus = getQueryString("newStatus");
+    var _receiving_detail_id = getQueryString("receiving_detail_id");
+
+    var _mode = "create";//modify
+
+    $(document).ready(function () {
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                save();
+            }
+        });
+
+        load();
+    });
+
+    function load() {
+
+        //订单当前状态：1：待付费 2：待发货 3：已发货 4：已收货 5：申请退货 6：退货中 9：已完成
+        switch (_newStatus) {
+            case "3":
+                $("#tableForStatus_2").show();
+                break;
+                
+           
+
+        }
+        
+    }
+
+    function save() {
+
+        var args = new Object();
+        __getDto("form", args);
+
+        args.order_id = _orderId;
+        args.newOrder_status = _newStatus;
+
+        if (_newStatus == "9") {
+            args.receiving_detail_id = _receiving_detail_id.split(",");
+        }
+
+        __requestApi({
+            msg: "是否确认更新订单状态？",
+            data: args,
+            apiUrl: "/Api/Order/CreateOrderRecord",
+            callback: function (data) {
+                //console.log(JSON.stringify(data));
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.__loadDataOnPageAndCloseLayer(index);
+
+            }
+        });
+
+    }
+
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">处理订单</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table id="tableForStatus_2" width="100%" border="0" cellspacing="0" cellpadding="0" style="display:none">
+            <tr>
+                <td width="90" height="36">配送单号：</td>
+                <td><input id="txt_transport_no" name="txt_transport_no" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="transport_no" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="90" height="36">物流公司：</td>
+                <td><input id="txt_transport_company" name="txt_transport_company" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="transport_company" maxlength="50" /></td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="90" height="36">备注：</td>
+                <td><input id="txt_modify_comment" name="txt_modify_comment" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="modify_comment" maxlength="250" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:right">
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+

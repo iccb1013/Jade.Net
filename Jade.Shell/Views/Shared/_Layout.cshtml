@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @*@Styles.Render("~/Scripts/jqueryui/jquery-ui.css")*@
+
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/Scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/Scripts/validate/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/layer/layer.js")
+    @Scripts.Render("~/Scripts/laytpl.js")
+    @Scripts.Render("~/Scripts/laypage/laypage.js")
+    @Scripts.Render("~/Scripts/laydate/laydate.js")
+    @Scripts.Render("~/Scripts/math.js")
+    @*@Scripts.Render("~/Scripts/jqueryui/jquery-ui.js")*@
+
+    @Styles.Render("~/Scripts/select2/css/select2.min.css")
+    @Scripts.Render("~/Scripts/select2/js/select2.min.js")
+
+
+    @Styles.Render("~/Scripts/layui/css/layui.css")
+    @Scripts.Render("~/Scripts/layui/layui.all.js")
+
+
+    @Scripts.Render("~/Scripts/layout.js")
+
+    <style>
+        body, html {
+           background:#E9EBEB;
+        }
+
+      
+    </style>
+
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+
+            activeLeftMenuItem("leftMenuItem_@ViewBag.SubLeftMenu");
+
+            onReady();
+        });
+        
+        function onReady() {
+
+        }
+
+    </script>
+
+</head>
+<body>
+    <div class="header-wrap">
+        <div class="header-wrap-inner">
+            <div style="float:left;color:white;line-height:35px;font-size:18px;cursor:pointer" onclick="goUrl('/Home/PersonalCenter')">
+                张寿宴玉雕工作室 2.0
+            </div>
+            <ul class="user-op">
+                <li><a href="#">@ViewBag.UserContext.User.name</a><span>|</span></li>
+                <li><a href="/Home/Logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="header-nav-wrap">
+        <div class="header-nav-wrap-inner">
+            <ul>
+                @if (AuthorizationHelper.Verify("L1_Settings", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("User","Settings")" class="@if(ViewBag.MainMenu == "Settings"){@Html.Raw("active")}">系统管理</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_Member", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Member", "Member")" class="@if(ViewBag.MainMenu == "Member"){@Html.Raw("active")}">会员管理</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_Product", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Product", "Product")" class="@if(ViewBag.MainMenu == "Product"){@Html.Raw("active")}">商品管理</a></li>
+                }
+
+                @if (AuthorizationHelper.Verify("L1_MicroClass", HttpContext.Current))
+                {
+                    <li><a href="@Url.Action("Group","MicroClass")" class="@if(ViewBag.MainMenu == "MicroClass"){@Html.Raw("active")}">课程管理</a></li>
+                }
+                <li><a href="@Url.Action("Password","PersonalCenter")" class="@if(ViewBag.MainMenu == "PersonalCenter"){@Html.Raw("active")}">个人中心</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-container-wrap">
+        <div class="page-container-wrap-inner" style="width: 1082px;">
+            <div class="nav-wrap">
+                @Html.Partial("_LeftMenu")
+            </div>
+            <div class="main" style="">
+
+                @RenderBody()
+
+            </div>
+        </div>
+        <div class="footer-wrap">
+            <p>张寿宴玉雕工作室</p>
+        </div>
+    </div>
+
+
+</body>
+</html>

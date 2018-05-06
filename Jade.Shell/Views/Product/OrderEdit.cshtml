@@ -1,0 +1,306 @@
+﻿
+@{
+    ViewBag.Title = "OrderEdit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+
+@Scripts.Render("~/Scripts/editViewCommon.js")
+
+<script>
+    var _id = getQueryString("id");
+
+    var _mode = "create";//modify
+    var _data = null;
+
+    var _table;
+    var _tableLog;
+
+    $(document).ready(function () {
+
+        __setReadOnly("form");
+
+        initTable();
+
+        load();
+    });
+
+    function load() {
+
+        if (_id == undefined || _id == "") {
+            return;
+        }
+
+        $("#btnRecord").hide();
+        $("#btnRecord2").hide();
+        $("#btnFinish").hide();
+
+        _mode = "modify";
+        $("#btnRemove").show();
+
+        var url = "/Api/Order/GetOrder/" + _id;
+
+        __requestLoadDataApi(url,function(data){
+            _data = data.Data;
+         
+            __setDto("form", _data);
+
+
+            //$.each(_data.Product_Order_Detail, function (index, value) {
+            //    value.checked = false;
+            //});
+
+            _table.reload({
+                data: _data.Product_Order_Detail
+            });
+
+            _tableLog.reload({
+                data: _data.Product_Order_Record
+            });
+
+
+            //订单当前状态：1：待付费 2：待发货 3：已发货 4：已收货 5：申请退货 6：退货中 9：已完成
+            switch (_data.current_status) {
+                case 1:
+                    $("#btnRecord").show();
+                    $("#btnRecord").val("付款");
+                    break;
+                case 2:
+                    $("#btnRecord").show();
+                    $("#btnRecord").val("发货");
+                    break;
+                case 3:
+                    $("#btnRecord").show();
+                    $("#btnRecord").val("已收货");
+                    break;
+                case 4:
+                    $("#btnFinish").show();
+                    $("#btnRecord2").show();
+                    break;
+                default:
+
+            }
+        });
+    }
+
+    function removeData() {
+        __requestRemoveDataApi("/Api/Order/RemoveOrder/" + _id);
+    }
+
+    function initTable() {
+        var args = getTableRenderArgs();
+        var argsLog = getTableLogRenderArgs();
+
+        layui.use('table', function () {
+            var table = layui.table;
+
+            //展示已知数据
+            _table = table.render(args);
+
+            _tableLog = table.render(argsLog);
+
+            table.on('checkbox(table)', function (obj) {
+                console.log(obj)
+            });
+        });
+
+
+
+
+    }
+
+    function getTableRenderArgs() {
+        return {
+            elem: '#table'
+             //  , width: 790
+            //   , height: 300
+              , cols: [[ //标题栏 
+                   { checkbox: true, fixed: 'left' },
+                   {
+                       field: 'Number', title: '货号', width: 120, fixed: 'left', sort: false,
+                       templet: "<div><a href='javascript:void(0)' onclick=\"modify('{{d.id}}')\">{{d.product_code}}</a></div>"
+                   },
+            { title: "名称", field: "product_name", width: 100, sort: false, },
+            { title: "购买数量", field: "buy_num", width: 100, sort: false, },
+            { title: "证书落款", field: "cert_sign", width: 100, sort: false, },
+            { title: "购买价", field: "current_price", width: 100, sort: false, },
+           { title: "成本价", field: "real_price", width: 100, sort: false, },
+           { title: "出厂价", field: "cost_price", width: 100, sort: false, },
+           { title: "一级分销商价", field: "first_distribution_price", width: 130, sort: false, },
+            { title: "二级分销商价", field: "second_distribution_price", width: 130, sort: false, },
+            { title: "会员价", field: "member_price", width: 100, sort: false, },
+            { title: "已收货	", field: "is_receiving", width: 100, sort: false, },
+            { title: "券名称	", field: "coupon_name", width: 100, sort: false, },
+            { title: "用券优惠金额	", field: "coupon_sale_price", width: 130, sort: false, },
+              ]]
+          , skin: 'row' //表格风格
+          , even: true
+            //   , page: true //是否显示分页
+            // , limits: [5, 7, 10]
+            //  , limit: 5 //每页默认显示的数量
+        }
+    }
+
+    function getTableLogRenderArgs() {
+        return {
+            elem: '#tableLog'
+            //  , width: 790
+            //   , height: 300
+              , cols: [[ //标题栏 
+                                  { title: "时间", field: "modify_date_time", width: 150, sort: false, },
+                { title: "备注", field: "modify_comment", width: 600, sort: false, },
+              ]]
+          , skin: 'row' //表格风格
+          , even: true
+            //   , page: true //是否显示分页
+            // , limits: [5, 7, 10]
+            //  , limit: 5 //每页默认显示的数量
+        }
+    }
+
+
+    function record(status) {
+
+        //订单当前状态：1：待付费 2：待发货 3：已发货 4：已收货 5：申请退货 6：退货中 9：已完成
+
+        var newStatus = 0;
+        if (status == undefined) {
+            switch (_data.current_status) {
+                case 1:
+                    newStatus = 2;
+                    break;
+                case 2:
+                    newStatus = 3;
+                    break;
+                case 3:
+                    newStatus = 4;
+                    break;
+            }
+        } else {
+            newStatus = status;
+        }
+
+        var url = 'CreateOrderRecord?orderId=' + _id + "&currentStatus=" + _data.current_status + "&newStatus=" + newStatus;
+
+        layer.open({
+            type: 2,
+            area: ['500px', '250px'],
+            closeBtn: false,
+            title: "",
+            shift: _layerShift,
+            content: url
+        });
+
+    }
+
+    function finish() {
+
+        var selectedIds = "";
+
+        $.each(_data.Product_Order_Detail, function (index, value) {
+            
+            if (value.LAY_CHECKED != undefined && value.LAY_CHECKED) {
+                selectedIds += value.id + ",";
+            }
+        });
+
+        if (selectedIds == "") {
+            layerAlert("请选择已确认完成交易的商品。");
+            return;
+        }
+
+        selectedIds = selectedIds.substr(0, selectedIds.length - 1);
+
+        var url = 'CreateOrderRecord?orderId=' + _id + "&currentStatus=" + _data.current_status + "&newStatus=9&receiving_detail_id=" + selectedIds;
+
+        layer.open({
+            type: 2,
+            area: ['500px', '250px'],
+            closeBtn: false,
+            title: "",
+            shift: _layerShift,
+            content: url
+        });
+    }
+
+    function __loadDataOnPageAndCloseLayer(layerIndex) {
+        layer.close(layerIndex);
+        load();
+    }
+
+</script>
+
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">订单</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px; ">
+    <form id="form" onsubmit="return false">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="110" height="36">订单号：</td>
+                <td width="320"><input id="txt_id" name="txt_id" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="id" maxlength="50" /></td>
+                <td width="110" height="36">下单时间：</td>
+                <td><input id="txt_order_date_time" name="txt_order_date_time" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="order_date_time" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">会员：</td>
+                <td width="320"><input id="txt_member_name" name="txt_member_name" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="member_name" maxlength="50" /></td>
+                <td width="110" height="36">会员手机号：</td>
+                <td><input id="txt_member_phone_num" name="txt_member_phone_num" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="member_phone_num" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">物流公司：</td>
+                <td width="320"><input id="txt_transport_no" name="txt_transport_no" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="transport_no" maxlength="50" /></td>
+                <td width="110" height="36">发货单号：</td>
+                <td><input id="txt_transport_company" name="txt_transport_company" type="text" class="input_16" style="width:96%; " keyenter dtoproperty="transport_company" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td width="110" height="36">收货人：</td>
+                <td width="320"><input id="txt_consignee" name="txt_consignee" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="consignee" maxlength="50" /></td>
+                <td width="110" height="36">联系电话：</td>
+                <td><input id="txt_consignee_phone" name="txt_consignee_phone" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="consignee_phone" maxlength="50" /></td>
+
+            </tr>
+            <tr>
+                <td width="110" height="36">收货地址：</td>
+                <td colspan="3"><input id="txt_consignee_address" name="txt_consignee_address" type="text" class="input_16" style="width:90%; " keyenter dtoproperty="consignee_address" maxlength="50" /></td>
+            </tr>           
+        </table>
+    </form>
+    <div>
+        <div>
+            商品信息
+        </div>
+        <div style="margin-top:15px;">
+            <table id="table" lay-filter="table"></table>
+        </div>
+    </div>
+    <div>
+        <div>
+            处理日志
+        </div>
+        <div>
+            <table id="tableLog" lay-filter="tableLog"></table>
+        </div>
+    </div>
+</div>
+<div style="background-color:#ccc; position:absolute; bottom:55px; left:20px;right:20px; height:1px;">
+</div>
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        <input name="btnRemove" type="button" class="btn_red" id="btnRemove" value="删 除" style="display:none" onclick="removeData()" />
+    </div>
+    <div style="float:right">
+        <input name="btnRecord" type="button" class="btn_green" id="btnRecord" value="处理订单" onclick="record()" style="display:none" />
+
+        <input name="btnFinish" type="button" class="btn_green" id="btnFinish" value="订单完成" onclick="finish()" style="display:none" />
+        <input name="btnRecord2" type="button" class="btn_green" id="btnRecord2" value="申请退货" onclick="record(5)" style="display:none" />
+
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="关 闭" onclick="__closePopupFrameLayer()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+

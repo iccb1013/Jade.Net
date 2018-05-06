@@ -1,0 +1,170 @@
+﻿
+@{
+    ViewBag.Title = "MultipleUserSelector";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/listViewCommon2.js")
+
+
+<script language="javascript">
+
+    var _target = getQueryString("target");
+    var _selectedUserArray = new Array();
+
+    $(document).ready(function () {
+
+        initTable();
+
+        loadData();
+
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                loadData();
+            }
+        });
+    });
+
+    function initTable() {
+        var args = getTableRenderArgs();
+
+        layui.use('table', function () {
+            var table = layui.table;
+
+            //展示已知数据
+            __table = table.render(args);
+        });
+    }
+
+    function getTableRenderArgs() {
+        return {
+            elem: '#table'
+            //, width: 790
+               , height: 'full-240'
+              , cols: [[ //标题栏
+                  { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                   {
+                       field: 'account', title: '账户', width: 120, fixed: 'left', sort: false,
+                       templet: "<div><a href='javascript:void(0)' onclick=\"selectUser('{{d.id}}','{{d.name}}')\">{{d.account}}</a></div>"
+                   },
+                { title: "姓名", field: "name", width: 100, sort: false, },
+               { title: "手机", field: "cellphone", width: 150, sort: false, },
+               { title: "创建时间", field: "createdTime", width: 150, sort: false, },
+               { title: "最后登录时间", field: "lastLoginTime", width: 150, sort: false, },
+              ]]
+          , skin: 'row' //表格风格
+          , even: true
+            //   , page: true //是否显示分页
+            // , limits: [5, 7, 10]
+            //  , limit: 5 //每页默认显示的数量
+        }
+    }
+
+    function getLoadDataArgs(targetPage) {
+
+        var args = new Object();
+        args.PagingInfo = new Object();
+        args.PagingInfo.CurrentPage = targetPage || 1;
+        args.OrderBy = "createdTime desc";
+        args.Parameters = new Object();
+
+        __getDto("divSearchArea", args.Parameters);
+
+        return args;
+    }
+
+    function loadData(targetPage) {
+
+        var loadListDataArgs = new Object();
+        loadListDataArgs.Args = getLoadDataArgs(targetPage);
+        loadListDataArgs.ApiUrl = "/Api/User/GetUserList";
+
+        __loadListData(loadListDataArgs);
+    }
+
+    function selectUser(id, name) {
+
+        for (i = 0; i < _selectedUserArray.length; i++) {
+            if (_selectedUserArray[i].id == id)
+                return;
+        }
+
+        var person = new Object();
+        person.Id = id;
+        person.Name = name;
+
+        _selectedUserArray[_selectedUserArray.length] = person;
+
+        renderSelectedUser();
+    }
+
+    function removeSelectedUser(i) {
+        _selectedUserArray.splice(i, 1);
+        renderSelectedUser();
+    }
+
+    function renderSelectedUser() {
+
+        $("#spanSelectedUserCount").html(_selectedUserArray.length);
+
+        var gettpl = document.getElementById('selectedUserTemplate').innerHTML;
+        laytpl(gettpl).render(_selectedUserArray, function (html) {
+            document.getElementById('divSelectedUserContainer').innerHTML = html;
+        });
+    }
+
+    function save() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.selectMultipleUserCallback(_selectedUserArray, index);
+    }
+
+    function cancel() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+
+</script>
+
+<script id="selectedUserTemplate" type="text/html">
+    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+    <div style="float:left;margin:5px; border:1px solid gray ;padding:2px 6px">
+        <span>{{ d[i].Name }}</span>
+        <span style="margin-left:5px;font-size:10px; cursor:pointer " onclick="removeSelectedUser({{ i }})">X</span>
+    </div>
+    {{# } }}
+
+    <div style="clear:both">
+    </div>
+</script>
+
+<div class="PopupWindowTitle">
+    <span id="spanTitle">选择用户</span>
+</div>
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:140px; top:50px;">
+    <div style="margin-top:15px;">
+        <table id="table" lay-filter="table"></table>
+    </div>
+    <div id="divPagingContainer" style="margin-top:10px; margin-bottom:0px;text-align:right; ">
+    </div>
+</div>
+
+
+<div style="position:absolute; bottom:55px; left:20px;right:20px;height:70px; padding:5px; border:1px solid lightgray;overflow:auto"
+     id="divSelectedUserContainer">
+
+</div>
+
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+    <div style="float:left;">
+        已选用户：<span id="spanSelectedUserCount">0</span>
+    </div>
+    <div style="float:right">
+        <input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="cancel()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+

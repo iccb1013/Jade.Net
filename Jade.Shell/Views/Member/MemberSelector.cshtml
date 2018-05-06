@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "MemberSelector";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+
+@Scripts.Render("~/Scripts/listViewCommon2.js")
+
+
+<script language="javascript">
+
+    var _target = getQueryString("target");
+
+    $(document).ready(function () {
+
+        initTable();
+
+        loadData();
+
+        $("[keyenter]").keypress(function (e) {
+            if (e.keyCode == 13) {
+                loadData();
+            }
+        });
+    });
+
+    function initTable() {
+        var args = getTableRenderArgs();
+
+        layui.use('table', function () {
+            var table = layui.table;
+
+            //展示已知数据
+            __table = table.render(args);
+
+        });
+    }
+
+    function getTableRenderArgs() {
+        return {
+            elem: '#table'
+            //, width: 790
+            //, height: 450
+            , height: 'full-240'
+              , cols: [[ //标题栏
+                  { field: 'NO', title: 'NO', width: 70, fixed: 'left' },
+                     {
+                         field: 'Name', title: '姓名', width: 150, sort: false,
+                         templet: "<div><a href='javascript:void(0)' onclick=\"selectMember('{{d.id}}','{{d.name}}','{{d.phone_num}}')\">{{d.phone_num}}</a></div>"
+                     },
+                       { title: "姓名", field: "name", width: 100, sort: false, },
+               { title: "微信", field: "wechat_no", width: 150, sort: false, },
+               { title: "上级代理", field: "superior_agent_name", width: 100, sort: false, },
+               { title: "会员状态", field: "status_text", width: 100, sort: false, },
+                { title: "会员类型", field: "type_text", width: 100, sort: false, },
+                { title: "总浏览量", field: "product_browse_count", width: 100, sort: false, },
+                { title: "总访问量", field: "app_browse_count", width: 100, sort: false, },
+
+              ]]
+          , skin: 'row' //表格风格
+          , even: true
+            //   , page: true //是否显示分页
+            // , limits: [5, 7, 10]
+            //  , limit: 5 //每页默认显示的数量
+        }
+    }
+
+    function loadData(targetPage) {
+
+        var loadListDataArgs = new Object();
+        loadListDataArgs.Args = getLoadDataArgs(targetPage);
+        loadListDataArgs.ApiUrl = "/Api/Member/GetMemberList";
+
+        __loadListData(loadListDataArgs);
+    }
+
+    function getLoadDataArgs(targetPage) {
+
+        var args = new Object();
+        args.PagingInfo = new Object();
+        args.PagingInfo.CurrentPage = targetPage || 1;
+        args.OrderBy = "reg_time desc";
+        args.Parameters = new Object();
+        __getDto("divSearchArea", args.Parameters);
+
+        return args;
+    }
+
+    function selectMember(id, name, phone_num) {
+
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.selectMemberCallback(index, _target, id, name, phone_num);
+    }
+
+  
+
+    function cancel() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+
+</script>
+<div class="PopupWindowTitle">
+    <span id="spanTitle">选择会员</span>
+</div>
+
+<div style="position:absolute; overflow:auto ;margin-top:5px;left:30px; right:30px; bottom:60px; top:50px;">
+
+    <div id="divSearchArea" class="divBorder_aque" style="padding:10px 10px 0px 10px;">
+        <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div>
+                        <div style="float:left;margin-right:25px;margin-bottom:10px;">
+                            关键词：
+                            <input id="txtKeyword" name="txtKeyword" type="text" class="input_16" style="width:250px;" keyenter dtoproperty="Keyword" />
+                        </div>
+
+                        <div style="clear:both"></div>
+                    </div>
+                </td>
+                <td width="150" align="right" valign="top">
+                    <input type="button" value="查询" class="btn_white" onclick="loadData()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top:5px;">
+        <table id="table" lay-filter="table"></table>
+    </div>
+    <div id="divPagingContainer" style="margin-top:10px; margin-bottom:0px;text-align:right; ">
+    </div>
+</div>
+
+<div style="position:absolute; bottom:15px; left:20px;right:20px;">
+
+    <div style="float:right">
+        @*<input name="btnSave" type="button" class="btn_aque" id="btnSave" value="保 存" onclick="save()" />*@
+        <input name="btnCancel" type="button" class="btn_aque" id="btnCancel" value="取 消" onclick="cancel()" />
+    </div>
+    <div style="clear:both">
+    </div>
+</div>
+
+

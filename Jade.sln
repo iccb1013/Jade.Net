@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jade.Model", "Jade.Model\Jade.Model.csproj", "{F9240053-53E8-466A-B0AA-F518653F883B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jade.Core", "Jade.Core\Jade.Core.csproj", "{D3F616A6-15A6-44D5-9763-1F2DD60E1077}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jade.Model.Dto", "Jade.Model.Dto\Jade.Model.Dto.csproj", "{51DD9FA7-1E65-46BD-9A80-9509785BAA92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jade.Shell", "Jade.Shell\Jade.Shell.csproj", "{C61B00DF-59CF-4D63-8166-A67F626265ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheng.Web.Infrastructure", "Sheng.Web.Infrastructure\Sheng.Web.Infrastructure.csproj", "{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheng.Kernal", "Sheng.Kernal\Sheng.Kernal.csproj", "{60C2DE74-7898-458E-A464-9266A37347F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCPRestSDK", "Yuntongxun\CCPRestSDK\CCPRestSDK.csproj", "{80326A65-5E30-4238-BD00-B9FD69A53B91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9240053-53E8-466A-B0AA-F518653F883B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9240053-53E8-466A-B0AA-F518653F883B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9240053-53E8-466A-B0AA-F518653F883B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9240053-53E8-466A-B0AA-F518653F883B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F616A6-15A6-44D5-9763-1F2DD60E1077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F616A6-15A6-44D5-9763-1F2DD60E1077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F616A6-15A6-44D5-9763-1F2DD60E1077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F616A6-15A6-44D5-9763-1F2DD60E1077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DD9FA7-1E65-46BD-9A80-9509785BAA92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DD9FA7-1E65-46BD-9A80-9509785BAA92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DD9FA7-1E65-46BD-9A80-9509785BAA92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DD9FA7-1E65-46BD-9A80-9509785BAA92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61B00DF-59CF-4D63-8166-A67F626265ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61B00DF-59CF-4D63-8166-A67F626265ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61B00DF-59CF-4D63-8166-A67F626265ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61B00DF-59CF-4D63-8166-A67F626265ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1EE29EA-3034-4B94-AE53-1CABF3CA0116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C2DE74-7898-458E-A464-9266A37347F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C2DE74-7898-458E-A464-9266A37347F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C2DE74-7898-458E-A464-9266A37347F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C2DE74-7898-458E-A464-9266A37347F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80326A65-5E30-4238-BD00-B9FD69A53B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80326A65-5E30-4238-BD00-B9FD69A53B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80326A65-5E30-4238-BD00-B9FD69A53B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80326A65-5E30-4238-BD00-B9FD69A53B91}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
